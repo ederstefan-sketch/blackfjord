@@ -433,8 +433,8 @@ a.tile:hover .more span { transform: translateX(4px); }
 
 /* ---------- Ventures: Preishinweis, Projektkarte mit Logo ---------- */
 .pkg-price .ust { margin-left: .35rem; color: var(--mute); font-size: .8rem; font-weight: 400; letter-spacing: 0; white-space: nowrap; }
-.proj { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
-.proj-logo { display: block; width: clamp(6.5rem, 14vw, 9.5rem); height: auto; object-fit: contain; }
+.proj { display: block; }
+.proj-logo { display: block; width: clamp(8.5rem, 22vw, 13rem); height: auto; margin: 0 0 1.5rem; object-fit: contain; }
 .proj p { margin: 0 0 1.25rem; max-width: 34rem; color: var(--mute); }
 .proj .tags { margin-bottom: 1.5rem; }
 @media (max-width: 800px) { .proj { grid-template-columns: 1fr; } }
