@@ -27,7 +27,7 @@ function bereinigen(text, max) {
     .slice(0, max);
 }
 
-async function anfrageSpeichern(request, env) {
+async function anfrageSpeichern(request, env, ctx) {
   if (request.method !== "POST") {
     return antwort(405, { ok: false, error: "method" }, { allow: "POST" });
   }
@@ -71,29 +71,34 @@ async function anfrageSpeichern(request, env) {
     .bind(art, name, email, nachricht)
     .run();
 
-  // Optional: E-Mail-Benachrichtigung, sobald Cloudflare Email Service eingerichtet ist
-  if (env.EMAIL && env.NOTIFY_TO) {
-    try {
-      await env.EMAIL.send({
-        to: env.NOTIFY_TO,
-        from: env.NOTIFY_FROM || "formular@blackfjord.at",
-        subject: `Neue Anfrage: ${ARTEN[art]}`,
-        text: `Bereich: ${ARTEN[art]}\nName: ${name}\nE-Mail: ${email}\n\n${nachricht}\n`,
-      });
-    } catch (fehler) {
-      console.log("Benachrichtigung fehlgeschlagen", String(fehler));
-    }
+  // Benachrichtigung per E-Mail über Resend (nur aktiv, wenn das Secret RESEND_API_KEY gesetzt ist)
+  if (env.RESEND_API_KEY) {
+    ctx.waitUntil(
+      fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, "content-type": "application/json" },
+        body: JSON.stringify({
+          from: env.NOTIFY_FROM || "blackfjord Formular <formular@mail.blackfjord.at>",
+          to: [env.NOTIFY_TO || "office@blackfjord.at"],
+          reply_to: email,
+          subject: `Neue Anfrage: ${ARTEN[art]}`,
+          text: `Bereich: ${ARTEN[art]}\nName: ${name}\nE-Mail: ${email}\n\n${nachricht}\n`,
+        }),
+      })
+        .then(async (r) => { if (!r.ok) console.log("Mailversand fehlgeschlagen", r.status, await r.text()); })
+        .catch((fehler) => console.log("Mailversand fehlgeschlagen", String(fehler))),
+    );
   }
 
   return antwort(200, { ok: true });
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/api/contact") {
       try {
-        return await anfrageSpeichern(request, env);
+        return await anfrageSpeichern(request, env, ctx);
       } catch (fehler) {
         console.log("Fehler bei /api/contact", String(fehler));
         return antwort(500, { ok: false, error: "server" });
