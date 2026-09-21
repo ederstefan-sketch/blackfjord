@@ -1,8 +1,18 @@
 {
   "name": "drop-207f22dd-fd0",
+  "main": "worker.js",
   "compatibility_date": "2026-09-20",
   "assets": {
     "directory": "./public",
-    "not_found_handling": "404-page"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "blackfjord-anfragen",
+      "database_id": "201334fa-5ccf-4433-99ca-a967ec436ab9"
+    }
+  ]
 }
