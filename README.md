@@ -14,3 +14,4 @@ Statische Website der blackfjord GmbH, ausgeliefert über Cloudflare (Workers St
 ## Neue Unterseite
 1. `public/impressum.html` kopieren, umbenennen (z. B. `immo.html`), Titel und Inhalt ändern.
 2. Link auf die Seite (`/immo`) einbauen und in `public/sitemap.xml` eintragen.
+3. Heute
