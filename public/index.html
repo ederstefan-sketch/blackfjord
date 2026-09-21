@@ -159,13 +159,42 @@
   <section id="kontakt" style="padding-top:0">
     <div class="wrap">
       <div class="panel">
-        <h2>Sprechen wir darüber</h2>
-        <p>Eine Anfrage zu Immobilien, Edelmetallen oder einer Zusammenarbeit? Schreiben Sie uns.</p>
-        <div class="cta-row">
-          <a class="pill big" href="mailto:office@blackfjord.at">E-Mail schreiben</a>
-          <a class="ghost big wa" href="https://wa.me/4369912065798?text=Hallo%20blackfjord%2C%20ich%20habe%20eine%20Anfrage%20%C3%BCber%20die%20Website." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.4A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c.3 2.6 2.4 5 5.2 6l1.3-1.4-1.9-1-.9.7c-.9-.4-1.7-1.2-2.1-2.1l.7-.9-1-1.9z"/></svg> WhatsApp</a>
+        <div class="panel-grid">
+          <div class="panel-info">
+            <h2>Sprechen wir darüber</h2>
+            <p>Eine Anfrage zu Immobilien, Edelmetallen oder einer Zusammenarbeit? Schreiben Sie uns über das Formular oder direkt.</p>
+            <div class="cta-row">
+              <a class="pill big" href="mailto:office@blackfjord.at">E-Mail schreiben</a>
+              <a class="ghost big wa" href="https://wa.me/4369912065798?text=Hallo%20blackfjord%2C%20ich%20habe%20eine%20Anfrage%20%C3%BCber%20die%20Website." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.4A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c.3 2.6 2.4 5 5.2 6l1.3-1.4-1.9-1-.9.7c-.9-.4-1.7-1.2-2.1-2.1l.7-.9-1-1.9z"/></svg> WhatsApp</a>
+            </div>
+            <a class="mail" href="mailto:office@blackfjord.at">office@blackfjord.at</a>
+          </div>
+          <form class="form" id="anfrage" novalidate>
+            <fieldset class="arten">
+              <legend>Worum geht es?</legend>
+              <label><input type="radio" name="art" value="immo"><span>Immobilien</span></label>
+              <label><input type="radio" name="art" value="ventures"><span>Ventures</span></label>
+              <label><input type="radio" name="art" value="gold"><span>Gold</span></label>
+              <label><input type="radio" name="art" value="allgemein" checked><span>Allgemein</span></label>
+            </fieldset>
+            <label class="f">Name
+              <input type="text" name="name" autocomplete="name" maxlength="100" required>
+            </label>
+            <label class="f">E-Mail
+              <input type="email" name="email" autocomplete="email" maxlength="200" required>
+            </label>
+            <label class="f">Nachricht
+              <textarea name="nachricht" rows="5" maxlength="4000" required></textarea>
+            </label>
+            <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+            <label class="consent">
+              <input type="checkbox" name="consent" required>
+              <span>Ich habe die <a href="/datenschutz">Datenschutzerklärung</a> gelesen und bin damit einverstanden, dass meine Angaben zur Bearbeitung meiner Anfrage gespeichert werden.</span>
+            </label>
+            <button class="pill big" type="submit">Anfrage senden</button>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          </form>
         </div>
-        <a class="mail" href="mailto:office@blackfjord.at">office@blackfjord.at</a>
       </div>
     </div>
   </section>
@@ -194,6 +223,44 @@
     menu.addEventListener("click", function (e) { if (e.target.tagName === "A") set(false); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) { set(false); btn.focus(); } });
     document.addEventListener("click", function (e) { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) set(false); });
+  })();
+</script>
+<script>
+  (function () {
+    var form = document.getElementById("anfrage");
+    if (!form) return;
+    var status = document.getElementById("form-status");
+    var button = form.querySelector('button[type="submit"]');
+    var geladen = Date.now();
+    function meldung(text, art) { status.textContent = text; status.className = "form-status" + (art ? " " + art : ""); }
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = form.elements;
+      var name = f.name.value.trim(), email = f.email.value.trim(), text = f.nachricht.value.trim();
+      if (name.length < 2) { meldung("Bitte geben Sie Ihren Namen an.", "err"); f.name.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { meldung("Bitte geben Sie eine gültige E-Mail-Adresse an.", "err"); f.email.focus(); return; }
+      if (text.length < 10) { meldung("Bitte schreiben Sie uns ein paar Worte mehr.", "err"); f.nachricht.focus(); return; }
+      if (!f.consent.checked) { meldung("Bitte bestätigen Sie die Datenschutzerklärung.", "err"); f.consent.focus(); return; }
+      button.disabled = true; meldung("Wird gesendet …");
+      fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          art: form.querySelector('input[name="art"]:checked').value,
+          name: name, email: email, nachricht: text, consent: true,
+          website: f.website.value, elapsed: Date.now() - geladen
+        })
+      }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok && d.ok }; }); })
+        .then(function (res) {
+          if (res.ok) {
+            form.innerHTML = '<p class="form-done">Vielen Dank. Ihre Anfrage ist bei uns eingegangen, wir melden uns bald bei Ihnen.</p>';
+          } else { throw new Error("fehler"); }
+        })
+        .catch(function () {
+          button.disabled = false;
+          meldung("Das hat leider nicht geklappt. Bitte schreiben Sie uns direkt an office@blackfjord.at.", "err");
+        });
+    });
   })();
 </script>
 </body>

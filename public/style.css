@@ -338,3 +338,44 @@ footer a:hover { color: var(--ink); text-decoration: underline; }
 .page h3 { font-size: 1.05rem; margin: 1.75rem 0 .4rem; font-weight: 600; }
 .page p { margin: 0 0 .6rem; color: var(--mute); }
 .page a { color: var(--blue-hi); }
+
+
+/* ---------- Kontaktformular ---------- */
+.panel-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.form { display: grid; gap: 1rem; }
+.form label.f { display: grid; gap: .35rem; font-size: .95rem; color: #B4B8C6; }
+.form input[type="text"], .form input[type="email"], .form textarea {
+  width: 100%;
+  background: rgba(10,10,15,.55);
+  border: 1px solid var(--line);
+  border-radius: .8rem;
+  padding: .8rem 1rem;
+  color: var(--ink);
+  font: inherit;
+}
+.form textarea { min-height: 8rem; resize: vertical; }
+.form input:focus-visible, .form textarea:focus-visible { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(76,144,240,.25); }
+.arten { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.arten legend { padding: 0; margin-bottom: .6rem; font-size: .95rem; color: #B4B8C6; }
+.arten label { position: relative; }
+.arten input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.arten span {
+  display: inline-block;
+  padding: .5rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  transition: border-color .2s ease, background .2s ease;
+}
+.arten input:checked + span { border-color: var(--blue); background: rgba(76,144,240,.18); }
+.arten input:focus-visible + span { box-shadow: 0 0 0 3px rgba(76,144,240,.35); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.consent { display: flex; gap: .7rem; align-items: flex-start; font-size: .9rem; color: #B4B8C6; }
+.consent input { margin-top: .25rem; accent-color: var(--blue); flex: none; }
+.consent a { color: var(--blue-hi); }
+.form button.pill { border: 0; cursor: pointer; font: inherit; font-weight: 600; justify-self: start; }
+.form button.pill[disabled] { opacity: .6; cursor: progress; }
+.panel .form-status { margin: 0; max-width: none; min-height: 1.4em; font-size: .95rem; color: #B4B8C6; }
+.panel .form-status.err { color: #FF9A9A; }
+.panel .form-done { margin: 0; padding: 1.5rem 0; max-width: none; font-size: 1.15rem; color: var(--ink); }
+@media (max-width: 800px) { .panel-grid { grid-template-columns: 1fr; } }
