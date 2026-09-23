@@ -410,16 +410,27 @@ footer a:hover { color: var(--ink); text-decoration: underline; }
 .pkg .pill, .pkg .ghost { align-self: stretch; text-align: center; }
 .v-note { margin: 1.75rem 0 0; color: var(--mute); max-width: 42rem; }
 
-.proj { padding: clamp(1.75rem, 3vw, 2.5rem); border: 1px solid var(--line); border-radius: 1.5rem; background: linear-gradient(135deg, #16223D 0%, var(--surface) 65%); }
-.proj-logo { display: block; width: clamp(6rem, 10vw, 7.5rem); height: auto; margin: 0 0 1.25rem; object-fit: contain; }
-.proj h3 { margin: 0 0 .6rem; font-size: clamp(1.4rem, 2.4vw, 1.8rem); font-weight: 600; letter-spacing: -.02em; }
-.proj p { margin: 0 0 1.1rem; max-width: 34rem; color: var(--mute); }
-.proj .tags { margin-bottom: 1.4rem; }
+.proj { padding: clamp(1.5rem, 2.5vw, 2rem); border: 1px solid var(--line); border-radius: 1.5rem; background: linear-gradient(135deg, #16223D 0%, var(--surface) 65%); }
+.proj-row { display: flex; align-items: center; gap: clamp(1.25rem, 3vw, 2.25rem); }
+.proj-logo { flex: none; display: block; width: clamp(4.5rem, 7vw, 5.5rem); height: auto; margin: 0; object-fit: contain; }
+.proj h3 { margin: 0 0 .5rem; font-size: clamp(1.25rem, 2vw, 1.5rem); font-weight: 600; letter-spacing: -.02em; }
+.proj p { margin: 0 0 .9rem; max-width: 34rem; color: var(--mute); }
+.proj .tags { margin-bottom: 1.1rem; }
+@media (max-width: 620px) {
+  .proj-row { flex-direction: column; align-items: flex-start; }
+  .proj-logo { width: 5rem; }
+}
 
 .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; margin: 0; padding: 0; list-style: none; }
 .flow li { position: relative; padding: 1.5rem 1.1rem 0 0; border-top: 2px solid var(--line); font-size: clamp(1.05rem, 1.6vw, 1.25rem); font-weight: 600; letter-spacing: -.02em; }
 .flow li::before { content: ""; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px rgba(76,144,240,.2); }
-.panel .form { max-width: 40rem; }
+.panel .form { max-width: 32rem; margin: 0 auto; text-align: left; }
+.v-panel { max-width: 38rem; margin: 0 auto; text-align: center; padding: clamp(1.75rem, 5vw, 2.75rem); }
+.v-panel h2 { font-size: clamp(1.6rem, 3vw, 2rem); }
+.v-panel > p { max-width: 28rem; margin: 0 auto 1.5rem; }
+.v-direct { display: flex; justify-content: center; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.75rem; }
+.v-panel .arten { justify-content: center; }
+.v-panel .consent { text-align: left; }
 
 @media (max-width: 1000px) {
   .pkgs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -443,10 +454,3 @@ a.tile:focus-visible { outline: 2px solid var(--blue-hi); outline-offset: 3px; }
 a.tile:hover .more span { transform: translateX(4px); }
 @media (prefers-reduced-motion: reduce) { .tile .more span { transition: none; } }
 
-/* ---------- Ventures: Preishinweis, Projektkarte mit Logo ---------- */
-.pkg-price .ust { margin-left: .35rem; color: var(--mute); font-size: .8rem; font-weight: 400; letter-spacing: 0; white-space: nowrap; }
-.proj { display: block; }
-.proj-logo { display: block; width: clamp(8.5rem, 22vw, 13rem); height: auto; margin: 0 0 1.5rem; object-fit: contain; }
-.proj p { margin: 0 0 1.25rem; max-width: 34rem; color: var(--mute); }
-.proj .tags { margin-bottom: 1.5rem; }
-@media (max-width: 800px) { .proj { grid-template-columns: 1fr; } }
