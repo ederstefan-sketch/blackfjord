@@ -410,6 +410,7 @@ footer a:hover { color: var(--ink); text-decoration: underline; }
 .pkg-list li::before { content: ""; position: absolute; left: 0; top: .5em; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
 .pkg .pill, .pkg .ghost { align-self: stretch; text-align: center; }
 .v-note { margin: 1.75rem 0 0; color: var(--mute); max-width: 42rem; }
+.v-abgrenzung { margin: .9rem 0 0; max-width: 40rem; color: var(--ink); }
 
 .proj { padding: clamp(1.5rem, 2.5vw, 2rem); border: 1px solid var(--line); border-radius: 1.5rem; background: linear-gradient(135deg, #16223D 0%, var(--surface) 65%); }
 .proj-row { display: flex; align-items: center; gap: clamp(1.25rem, 3vw, 2.25rem); }
@@ -455,3 +456,5 @@ a.tile:focus-visible { outline: 2px solid var(--blue-hi); outline-offset: 3px; }
 a.tile:hover .more span { transform: translateX(4px); }
 @media (prefers-reduced-motion: reduce) { .tile .more span { transition: none; } }
 
+
+.agb-hinweis { color: var(--mute); font-size: .9rem; }
