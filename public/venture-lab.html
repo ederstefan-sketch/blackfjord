@@ -7,44 +7,47 @@
 <title>Venture Lab – BLACKFJORD</title>
 <style>
   :root {
-    --bg: #0c141d;
-    --panel: #121c28;
-    --panel-2: #172433;
-    --line: #243548;
-    --text: #e4eaf1;
-    --muted: #8797ab;
-    --silver: #c9d1dc;
-    --blue: #6aa9ff;
-    --blue-dim: #2c4a75;
-    --ok: #62c48a;
-    --warn: #e3b25c;
-    --err: #ef7f7f;
-    --font: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --bg: #100F15;
+    --panel: #17161E;
+    --panel-2: #1E1D27;
+    --line: rgba(255,255,255,.09);
+    --text: #ECEDF1;
+    --muted: #9C9EAB;
+    --silver: #C8CCD4;
+    --blue: #4C90F0;
+    --blue-hi: #7DB1FF;
+    --blue-dim: rgba(76,144,240,.18);
+    --ok: #6FCB9F;
+    --warn: #D8B466;
+    --err: #FF9A9A;
+    --font: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Roboto, Arial, sans-serif;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
   body {
-    background: var(--bg); color: var(--text); font: 16px/1.5 var(--font);
+    background: var(--bg); color: var(--text); font: 16px/1.6 var(--font);
     -webkit-font-smoothing: antialiased;
   }
   button, input, select, textarea { font: inherit; color: inherit; }
-  :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--blue-hi); outline-offset: 3px; border-radius: 4px; }
   .muted { color: var(--muted); }
   .err { color: var(--err); }
   .pad { padding: 24px 20px; }
 
   /* Buttons und Felder */
   .btn {
-    background: var(--blue); color: #08121f; border: 0; border-radius: 8px;
-    padding: 10px 16px; font-weight: 600; cursor: pointer;
+    background: var(--blue); color: #071022; border: 0; border-radius: 999px;
+    padding: 10px 18px; font-weight: 600; cursor: pointer; transition: background .2s ease;
   }
+  .btn:hover:not(:disabled) { background: var(--blue-hi); }
   .btn:disabled { opacity: .5; cursor: default; }
-  .btn.ghost { background: transparent; color: var(--silver); border: 1px solid var(--line); font-weight: 500; }
-  .btn.ghost:hover { border-color: var(--blue-dim); }
-  .btn.sm { padding: 6px 10px; font-size: 14px; }
+  .btn.ghost { background: transparent; color: var(--silver); border: 1px solid var(--line); font-weight: 500; border-radius: 999px; transition: border-color .2s ease, background .2s ease; }
+  .btn.ghost:hover { border-color: var(--blue); background: rgba(76,144,240,.08); }
+  .btn.sm { padding: 6px 12px; font-size: 14px; }
   .link { background: none; border: 0; color: var(--blue); cursor: pointer; padding: 0; text-decoration: underline; }
+  .link:hover { color: var(--blue-hi); }
   input[type=text], input[type=email], input[type=password], input[type=date], select, textarea {
-    background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; width: 100%;
+    background: rgba(10,10,15,.55); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; width: 100%;
   }
   textarea { resize: none; }
   label { display: block; font-size: 14px; color: var(--muted); margin: 14px 0 6px; }
@@ -57,7 +60,9 @@
   .auth-box .row { margin-top: 16px; font-size: 14px; }
 
   /* Kopfbereich */
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .12em; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand span.word { font-weight: 600; font-size: 1.15rem; letter-spacing: -.01em; color: var(--silver); }
+  .brand span.word b { font-weight: 600; color: var(--blue); }
   .brand small { font-weight: 400; letter-spacing: 0; color: var(--muted); font-size: 15px; }
   header.top {
     display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between;
@@ -67,8 +72,8 @@
   .top-right { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   .top-right select { width: auto; max-width: 220px; padding: 7px 10px; }
   .badge { font-size: 14px; color: var(--silver); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
-  .badge.warn { color: var(--warn); border-color: #5a4a26; }
-  .badge.bad { color: var(--err); border-color: #5a2c2c; }
+  .badge.warn { color: var(--warn); border-color: rgba(216,180,102,.4); }
+  .badge.bad { color: var(--err); border-color: rgba(255,154,154,.4); }
 
   .banner { padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); font-size: 15px; }
   .banner.warn { border-left: 3px solid var(--warn); }
@@ -88,11 +93,11 @@
   .chatbar { padding: 12px 20px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; }
   .chatbar select { flex: 1; }
   .msgs { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-  .msg { max-width: 88%; padding: 10px 14px; border-radius: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg { max-width: 88%; padding: 10px 14px; border-radius: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
   .msg.user { align-self: flex-end; background: var(--blue-dim); }
   .msg.assistant { align-self: flex-start; background: var(--panel-2); border: 1px solid var(--line); }
   .msg.wait { color: var(--muted); }
-  .msg.err { color: var(--err); border-color: #5a2c2c; }
+  .msg.err { color: var(--err); border-color: rgba(255,154,154,.35); }
   .note { align-self: center; font-size: 13px; color: var(--muted); }
   .composer { display: flex; gap: 10px; padding: 12px 20px; padding-bottom: max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); align-items: flex-end; }
   .composer textarea { min-height: 44px; max-height: 160px; }
@@ -112,8 +117,8 @@
   .done .grow { text-decoration: line-through; color: var(--muted); }
   .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 20px; padding: 4px 8px; }
   .x:hover { color: var(--err); }
-  h2 { font-size: 20px; margin: 0 0 4px; font-weight: 600; }
-  details pre { white-space: pre-wrap; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin: 8px 0 0; }
+  h2 { font-size: 20px; margin: 0 0 4px; font-weight: 600; letter-spacing: -.01em; }
+  details pre { white-space: pre-wrap; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 8px 0 0; }
   .bubble-msg { padding: 12px 0; border-bottom: 1px solid var(--line); }
   .bubble-msg .meta { font-size: 13px; color: var(--muted); margin-bottom: 2px; }
   .bubble-msg p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -150,9 +155,7 @@
       if (v === false || v == null) continue;
       if (k === 'class') e.className = v;
       else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
-      else e.setAttribute(k, v === true ? '' : v
-
-);
+      else e.setAttribute(k, v === true ? '' : v);
     }
     for (const c of kids.flat()) {
       if (c == null || c === false) continue;
@@ -165,13 +168,15 @@
   const fail = (e) => alert(e?.message || 'Etwas ist schiefgelaufen.');
   const isAdmin = () => state.profile?.role === 'admin';
 
+  function wordmark() { return h('span', { class: 'word' }, 'black', h('b', {}, 'fjord')); }
+
   function logo() {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 32 32'); svg.setAttribute('width', '28'); svg.setAttribute('height', '28');
     svg.setAttribute('aria-hidden', 'true');
-    svg.innerHTML = '<polygon points="16,2 28,9 28,23 16,30 4,23 4,9" fill="none" stroke="#c9d1dc" stroke-width="1.6"/>' +
-      '<polygon points="8,21 14,11 18,17 21,13 25,21" fill="#6aa9ff"/>' +
-      '<path d="M7 24.5 Q16 21.5 25 24.5" fill="none" stroke="#c9d1dc" stroke-width="1.2"/>';
+    svg.innerHTML = '<polygon points="16,2 28,9 28,23 16,30 4,23 4,9" fill="none" stroke="#C8CCD4" stroke-width="1.6"/>' +
+      '<polygon points="8,21 14,11 18,17 21,13 25,21" fill="#4C90F0"/>' +
+      '<path d="M7 24.5 Q16 21.5 25 24.5" fill="none" stroke="#C8CCD4" stroke-width="1.2"/>';
     return svg;
   }
 
@@ -191,29 +196,19 @@
       }
     },
       h('label', { for: 'em' }, 'E-Mail'), email,
-      h('label', { for: 'pw' }, 'Passwort'
-)
-, pass,
+      h('label', { for: 'pw' }, 'Passwort'), pass,
       btn, msg,
       h('p', { class: 'row' }, h('button', {
         class: 'link', type: 'button', onclick: async () => {
           if (!email.value.trim()) { msg.textContent = 'Trag oben deine E-Mail ein, dann senden wir dir einen Link.'; return; }
           const { error } = await sb.auth.resetPasswordForEmail(email.value.trim(), { redirectTo: location.origin + '/venture-lab' });
           msg.className = 'row ' + (error ? 'err' : 'muted');
-          if (error) {
-            msg.textContent = error.status === 429
-              ? 'Es wurden zu viele Anfragen gesendet. Bitte versuch es in einer Stunde noch einmal.'
-              : error.status === 422
-                ? 'Die Weiterleitungs-URL ist in Supabase nicht freigegeben. Bitte Administrator informieren.'
-                : 'Der Link konnte nicht gesendet werden (' + (error.message || 'unbekannter Fehler') + ').';
-          } else {
-            msg.textContent = 'Wir haben dir einen Link zum Zurücksetzen gesendet. Bitte schau auch in den Spam-Ordner.';
-          }
+          msg.textContent = error ? 'Der Link konnte nicht gesendet werden.' : 'Wir haben dir einen Link zum Zurücksetzen gesendet.';
         }
       }, 'Passwort vergessen'))
     );
     app.replaceChildren(h('div', { class: 'auth' }, h('div', { class: 'auth-box' },
-      h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD')),
+      h('div', { class: 'brand' }, logo(), wordmark()),
       h('h1', {}, 'Venture Lab'),
       h('p', { class: 'muted' }, 'Melde dich an, um an deinem Venture zu arbeiten.'),
       form,
@@ -235,7 +230,7 @@
       }
     }, h('label', { for: 'np' }, 'Neues Passwort (mindestens 8 Zeichen)'), pass, h('button', { class: 'btn', type: 'submit' }, 'Passwort speichern'), msg);
     app.replaceChildren(h('div', { class: 'auth' }, h('div', { class: 'auth-box' },
-      h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD')), h('h1', {}, 'Neues Passwort festlegen'), form)));
+      h('div', { class: 'brand' }, logo(), wordmark()), h('h1', {}, 'Neues Passwort festlegen'), form)));
   }
 
   // ---------- Daten laden ----------
@@ -275,9 +270,7 @@
     return { text: m.plan === 'full' ? 'FULL' : 'BASIC', cls: '' };
   }
   function banner() {
- 
-  
- const s = status(); const m = state.membership;
+    const s = status(); const m = state.membership;
     if (isAdmin() && !m) return null;
     const contact = h('a', { href: 'mailto:' + CONTACT + '?subject=' + encodeURIComponent('Venture weiterentwickeln'), style: 'color:var(--blue)' }, 'Schreib uns');
     if (s.cls === 'bad' && m) return h('div', { class: 'banner bad' }, 'Dein Venture Workspace ist abgelaufen. Möchtest du dein Venture weiterentwickeln? ', contact, ' und wähle BASIC oder FULL.');
@@ -289,7 +282,7 @@
   function renderPortal() {
     if (!state.venture) {
       app.replaceChildren(
-        h('header', { class: 'top' }, h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD'), h('small', {}, 'Venture Lab')),
+        h('header', { class: 'top' }, h('div', { class: 'brand' }, logo(), wordmark(), h('small', {}, 'Venture Lab')),
           h('div', { class: 'top-right' }, isAdmin() ? h('button', { class: 'btn', onclick: newVenture }, 'Venture anlegen') : null,
             h('button', { class: 'btn ghost sm', onclick: () => sb.auth.signOut() }, 'Abmelden'))),
         h('div', { class: 'pad' }, h('h2', {}, 'Noch kein Venture'),
@@ -300,7 +293,7 @@
     const sel = h('select', { 'aria-label': 'Venture wählen', onchange: (e) => selectVenture(e.target.value) },
       state.ventures.map((v) => h('option', { value: v.id, selected: v.id === state.venture.id }, v.title)));
     const top = h('header', { class: 'top' },
-      h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD'), h('small', {}, 'Venture Lab')),
+      h('div', { class: 'brand' }, logo(), wordmark(), h('small', {}, 'Venture Lab')),
       h('div', { class: 'top-right' }, sel, h('span', { class: 'badge ' + s.cls }, s.text),
         isAdmin() ? h('button', { class: 'btn ghost sm', onclick: newVenture }, '+ Venture') : null,
         h('button', { class: 'btn ghost sm', onclick: () => sb.auth.signOut() }, 'Abmelden')));
@@ -338,8 +331,7 @@
     const { data: threads } = await sb.from('chat_threads').select('id,title,created_at').eq('venture_id', v.id).order('created_at', { ascending: false });
     if (state.threadId === undefined) state.threadId = threads?.[0]?.id ?? null;
 
-    const sel = h(
-'select', { 'aria-label': 'Chat wählen', onchange: (e) => { state.threadId = e.target.value || null; renderChat(c); } },
+    const sel = h('select', { 'aria-label': 'Chat wählen', onchange: (e) => { state.threadId = e.target.value || null; renderChat(c); } },
       h('option', { value: '' }, 'Neuer Chat'),
       (threads || []).map((t) => h('option', { value: t.id, selected: t.id === state.threadId }, t.title + ' (' + fmt(t.created_at) + ')')));
     const box = h('div', { class: 'msgs', 'aria-live': 'polite' });
@@ -400,8 +392,7 @@
     c.replaceChildren(
       h('h2', {}, 'Projektgedächtnis'),
       h('p', { class: 'muted' }, 'Das weiß Venture AI über dein Venture. Neue Fakten und Entscheidungen aus dem Chat landen hier automatisch.'),
-      h('div', { class: 'addrow' }, kind, txt, h('button', { class: 'btn', onclick: add 
-}, 'Merken')),
+      h('div', { class: 'addrow' }, kind, txt, h('button', { class: 'btn', onclick: add }, 'Merken')),
       h('div', { class: 'list' }, (data || []).length ? data.map((m) => h('div', { class: 'item' },
         h('span', { class: 'chip' }, KINDS[m.kind] || m.kind),
         h('div', { class: 'grow' }, m.content, h('div', { class: 'meta' }, fmt(m.created_at))),
@@ -430,8 +421,7 @@
     const sorted = [...(data || [])].sort((a, b) => order[a.status] - order[b.status]);
     c.replaceChildren(
       h('h2', {}, 'Aufgaben und Roadmap'),
-      h('div', { class: 'addrow', style: 'margin-top:14px' }, title, due, who, h('button', { class: 'btn',
- onclick: add }, 'Hinzufügen')),
+      h('div', { class: 'addrow', style: 'margin-top:14px' }, title, due, who, h('button', { class: 'btn', onclick: add }, 'Hinzufügen')),
       h('div', { class: 'list' }, sorted.length ? sorted.map((t) => h('div', { class: 'item' + (t.status === 'done' ? ' done' : '') },
         h('button', { class: 'status', 'aria-label': 'Status ändern, aktuell ' + SLABEL[t.status], title: SLABEL[t.status], onclick: async () => { await sb.from('tasks').update({ status: NEXT[t.status] }).eq('id', t.id); renderTasks(c); } }, SYM[t.status]),
         h('div', { class: 'grow' }, t.title, h('div', { class: 'meta' }, SLABEL[t.status] + (t.due_date ? ' · fällig ' + fmt(t.due_date) : ''))),
@@ -453,9 +443,7 @@
       const path = v.id + '/' + Date.now() + '-' + f.name.replace(/[^\w.\-]+/g, '_');
       const up = await sb.storage.from('venture-docs').upload(path, f);
       if (up.error) { msg.className = 'err'; msg.textContent = 'Hochladen fehlgeschlagen: ' + up.error.message; return; }
-      const { error } = await sb.from('documents').insert({ venture_id: v.id, name: f.
-name,
- storage_path: path, created_by: state.user.id });
+      const { error } = await sb.from('documents').insert({ venture_id: v.id, name: f.name, storage_path: path, created_by: state.user.id });
       if (error) { msg.className = 'err'; msg.textContent = error.message; return; }
       renderDocs(c);
     });
@@ -489,8 +477,7 @@ name,
   async function renderMsgs(c) {
     const v = state.venture;
     const { data } = await sb.from('comm_messages').select('*').eq('venture_id', v.id).order('created_at');
-    const ta = h('textarea', { rows: 3, placeholder: 'Nachricht an ' + (isAdmin() ? 'den Kunden' : 'BLACKFJORD'), maxlength: 4000, 
-'aria-label': 'Nachricht' });
+    const ta = h('textarea', { rows: 3, placeholder: 'Nachricht an ' + (isAdmin() ? 'den Kunden' : 'BLACKFJORD'), maxlength: 4000, 'aria-label': 'Nachricht' });
     const send = async () => {
       if (!ta.value.trim()) return;
       const { error } = await sb.from('comm_messages').insert({ venture_id: v.id, sender_id: state.user.id, body: ta.value.trim() });
@@ -509,8 +496,6 @@ name,
 
   // ---------- Start ----------
   sb.auth.onAuthStateChange((event) => {
-    if (event === 'PASSWORD_RECOVERY') return renderRecovery();
-    if (event === 'SIGNED_IN' && (location.hash.includes('type=recovery') || location.search.includes('type=recovery') || location.search.includes('code='))) return renderRecovery();
     if (event === 'SIGNED_OUT') {
       Object.assign(state, { user: null, profile: null, ventures: [], venture: null, membership: null, tab: 'chat', threadId: undefined });
       renderLogin();
@@ -518,25 +503,11 @@ name,
   });
 
   (async () => {
-    try {
-    const recovery = location.hash.includes('type=recovery') || location.search.includes('type=recovery') || location.search.includes('code=');
+    const recovery = location.hash.includes('type=recovery');
     const { data: { session } } = await sb.auth.getSession();
     if (recovery && session) return renderRecovery();
-    if (recovery) {
-      app.replaceChildren(h('p', { class: 'muted pad' }, 'Wiederherstellungs-Link wird geprüft …'));
-      for (let i = 0; i < 20; i++) {
-        await new Promise((res) => setTimeout(res, 500));
-        if (document.getElementById('np')) return;
-        const { data: { session: s2 } } = await sb.auth.getSession();
-        if (s2) return renderRecovery();
-      }
-      return renderLogin('Der Link ist ungültig oder abgelaufen. Bitte fordere über „Passwort vergessen“ einen neuen an.');
-    }
     if (session) return boot(session.user);
     renderLogin();
-    } catch (e) {
-      app.replaceChildren(h('p', { class: 'err pad' }, 'Die Seite konnte nicht geladen werden: ' + (e?.message || 'Unbekannter Fehler')));
-    }
   })();
 })();
 </script>
