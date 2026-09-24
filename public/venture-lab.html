@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Venture Lab – BLACKFJORD</title>
+<style>
+  :root {
+    --bg: #0c141d;
+    --panel: #121c28;
+    --panel-2: #172433;
+    --line: #243548;
+    --text: #e4eaf1;
+    --muted: #8797ab;
+    --silver: #c9d1dc;
+    --blue: #6aa9ff;
+    --blue-dim: #2c4a75;
+    --ok: #62c48a;
+    --warn: #e3b25c;
+    --err: #ef7f7f;
+    --font: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg); color: var(--text); font: 16px/1.5 var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .muted { color: var(--muted); }
+  .err { color: var(--err); }
+  .pad { padding: 24px 20px; }
+
+  /* Buttons und Felder */
+  .btn {
+    background: var(--blue); color: #08121f; border: 0; border-radius: 8px;
+    padding: 10px 16px; font-weight: 600; cursor: pointer;
+  }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn.ghost { background: transparent; color: var(--silver); border: 1px solid var(--line); font-weight: 500; }
+  .btn.ghost:hover { border-color: var(--blue-dim); }
+  .btn.sm { padding: 6px 10px; font-size: 14px; }
+  .link { background: none; border: 0; color: var(--blue); cursor: pointer; padding: 0; text-decoration: underline; }
+  input[type=text], input[type=email], input[type=password], input[type=date], select, textarea {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; width: 100%;
+  }
+  textarea { resize: none; }
+  label { display: block; font-size: 14px; color: var(--muted); margin: 14px 0 6px; }
+
+  /* Login */
+  .auth { min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+  .auth-box { width: 100%; max-width: 380px; }
+  .auth-box h1 { font-size: 24px; margin: 28px 0 6px; font-weight: 600; letter-spacing: -.01em; }
+  .auth-box .btn { width: 100%; margin-top: 22px; }
+  .auth-box .row { margin-top: 16px; font-size: 14px; }
+
+  /* Kopfbereich */
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .12em; }
+  .brand small { font-weight: 400; letter-spacing: 0; color: var(--muted); font-size: 15px; }
+  header.top {
+    display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between;
+    padding: 14px 20px; padding-top: max(14px, env(safe-area-inset-top));
+    border-bottom: 1px solid var(--line);
+  }
+  .top-right { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .top-right select { width: auto; max-width: 220px; padding: 7px 10px; }
+  .badge { font-size: 14px; color: var(--silver); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  .badge.warn { color: var(--warn); border-color: #5a4a26; }
+  .badge.bad { color: var(--err); border-color: #5a2c2c; }
+
+  .banner { padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); font-size: 15px; }
+  .banner.warn { border-left: 3px solid var(--warn); }
+  .banner.bad { border-left: 3px solid var(--err); }
+
+  nav.tabs { display: flex; gap: 4px; padding: 0 12px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+  nav.tabs button {
+    background: none; border: 0; padding: 12px 12px; color: var(--muted); cursor: pointer; white-space: nowrap;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  nav.tabs button[aria-current=true] { color: var(--text); border-bottom-color: var(--blue); }
+
+  main#content { max-width: 860px; margin: 0 auto; padding: 20px; }
+  main#content.chatmode { padding: 0; height: calc(100dvh - var(--chrome, 160px)); display: flex; flex-direction: column; }
+
+  /* Chat */
+  .chatbar { padding: 12px 20px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; }
+  .chatbar select { flex: 1; }
+  .msgs { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .msg { max-width: 88%; padding: 10px 14px; border-radius: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg.user { align-self: flex-end; background: var(--blue-dim); }
+  .msg.assistant { align-self: flex-start; background: var(--panel-2); border: 1px solid var(--line); }
+  .msg.wait { color: var(--muted); }
+  .msg.err { color: var(--err); border-color: #5a2c2c; }
+  .note { align-self: center; font-size: 13px; color: var(--muted); }
+  .composer { display: flex; gap: 10px; padding: 12px 20px; padding-bottom: max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); align-items: flex-end; }
+  .composer textarea { min-height: 44px; max-height: 160px; }
+  .empty { text-align: center; color: var(--muted); margin: auto; max-width: 420px; }
+
+  /* Listen */
+  .list { border-top: 1px solid var(--line); margin-top: 18px; }
+  .item { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .item .grow { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .item .meta { font-size: 13px; color: var(--muted); }
+  .chip { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; color: var(--silver); white-space: nowrap; }
+  .addrow { display: flex; gap: 10px; flex-wrap: wrap; }
+  .addrow > * { flex: 1 1 140px; }
+  .addrow .grow2 { flex: 3 1 240px; }
+  .addrow .btn { flex: 0 0 auto; }
+  .status { background: none; border: 0; font-size: 22px; cursor: pointer; color: var(--blue); line-height: 1; }
+  .done .grow { text-decoration: line-through; color: var(--muted); }
+  .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 20px; padding: 4px 8px; }
+  .x:hover { color: var(--err); }
+  h2 { font-size: 20px; margin: 0 0 4px; font-weight: 600; }
+  details pre { white-space: pre-wrap; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin: 8px 0 0; }
+  .bubble-msg { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .bubble-msg .meta { font-size: 13px; color: var(--muted); margin-bottom: 2px; }
+  .bubble-msg p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .auth-box { animation: rise .35s ease-out both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<div id="app"><p class="muted pad">Lädt …</p></div>
+<noscript><p class="pad">Für das Venture Lab wird JavaScript benötigt.</p></noscript>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  // ---------- Konfiguration ----------
+  const SB_URL = 'https://moirwvfslgyskxvcfxre.supabase.co';
+  const SB_KEY = 'sb_publishable_yccVaz2j7stfTKGMd-rHtg_PiBq19g0'; // öffentlicher Schlüssel, durch Row Level Security geschützt
+  const CONTACT = 'office@blackfjord.at';
+  const sb = supabase.createClient(SB_URL, SB_KEY);
+  const app = document.getElementById('app');
+
+  const state = { user: null, profile: null, ventures: [], venture: null, membership: null, tab: 'chat', threadId: undefined };
+  const TABS = [['chat', 'KI-Chat'], ['memory', 'Gedächtnis'], ['tasks', 'Aufgaben'], ['docs', 'Dokumente'], ['msgs', 'BLACKFJORD']];
+
+  // ---------- Hilfsfunktionen (alle Inhalte werden als Text eingefügt, nie als HTML) ----------
+  function h(tag, props, ...kids) {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(props || {})) {
+      if (v === false || v == null) continue;
+      if (k === 'class') e.className = v;
+      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? '' : v);
+    }
+    for (const c of kids.flat()) {
+      if (c == null || c === false) continue;
+      e.append(typeof c === 'object' ? c : document.createTextNode(String(c)));
+    }
+    return e;
+  }
+  const fmt = (d) => new Date(d).toLocaleDateString('de-AT');
+  const fmtT = (d) => new Date(d).toLocaleString('de-AT', { dateStyle: 'short', timeStyle: 'short' });
+  const fail = (e) => alert(e?.message || 'Etwas ist schiefgelaufen.');
+  const isAdmin = () => state.profile?.role === 'admin';
+
+  function logo() {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 32 32'); svg.setAttribute('width', '28'); svg.setAttribute('height', '28');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = '<polygon points="16,2 28,9 28,23 16,30 4,23 4,9" fill="none" stroke="#c9d1dc" stroke-width="1.6"/>' +
+      '<polygon points="8,21 14,11 18,17 21,13 25,21" fill="#6aa9ff"/>' +
+      '<path d="M7 24.5 Q16 21.5 25 24.5" fill="none" stroke="#c9d1dc" stroke-width="1.2"/>';
+    return svg;
+  }
+
+  // ---------- Anmeldung ----------
+  function renderLogin(message) {
+    const email = h('input', { type: 'email', id: 'em', autocomplete: 'username', required: true });
+    const pass = h('input', { type: 'password', id: 'pw', autocomplete: 'current-password', required: true });
+    const msg = h('p', { class: 'row err', role: 'alert' }, message || '');
+    const btn = h('button', { class: 'btn', type: 'submit' }, 'Anmelden');
+    const form = h('form', {
+      onsubmit: async (ev) => {
+        ev.preventDefault();
+        btn.disabled = true; msg.textContent = '';
+        const { data, error } = await sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
+        if (error) { msg.textContent = 'E-Mail oder Passwort stimmt nicht.'; btn.disabled = false; return; }
+        await boot(data.user);
+      }
+    },
+      h('label', { for: 'em' }, 'E-Mail'), email,
+      h('label', { for: 'pw' }, 'Passwort'), pass,
+      btn, msg,
+      h('p', { class: 'row' }, h('button', {
+        class: 'link', type: 'button', onclick: async () => {
+          if (!email.value.trim()) { msg.textContent = 'Trag oben deine E-Mail ein, dann senden wir dir einen Link.'; return; }
+          const { error } = await sb.auth.resetPasswordForEmail(email.value.trim(), { redirectTo: location.origin + '/venture-lab' });
+          msg.className = 'row ' + (error ? 'err' : 'muted');
+          msg.textContent = error ? 'Der Link konnte nicht gesendet werden.' : 'Wir haben dir einen Link zum Zurücksetzen gesendet.';
+        }
+      }, 'Passwort vergessen'))
+    );
+    app.replaceChildren(h('div', { class: 'auth' }, h('div', { class: 'auth-box' },
+      h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD')),
+      h('h1', {}, 'Venture Lab'),
+      h('p', { class: 'muted' }, 'Melde dich an, um an deinem Venture zu arbeiten.'),
+      form,
+      h('p', { class: 'row muted' }, 'Noch kein Zugang? Der Zugang startet mit deinem BLACKFJORD-Paket unter ', h('a', { href: '/ventures', style: 'color:var(--blue)' }, 'blackfjord.at/ventures'), '.')
+    )));
+  }
+
+  function renderRecovery() {
+    const pass = h('input', { type: 'password', id: 'np', autocomplete: 'new-password', minlength: 8, required: true });
+    const msg = h('p', { class: 'row err', role: 'alert' });
+    const form = h('form', {
+      onsubmit: async (ev) => {
+        ev.preventDefault();
+        const { error } = await sb.auth.updateUser({ password: pass.value });
+        if (error) { msg.textContent = 'Das Passwort konnte nicht gespeichert werden. Nimm mindestens 8 Zeichen.'; return; }
+        history.replaceState(null, '', location.pathname);
+        const { data } = await sb.auth.getUser();
+        await boot(data.user);
+      }
+    }, h('label', { for: 'np' }, 'Neues Passwort (mindestens 8 Zeichen)'), pass, h('button', { class: 'btn', type: 'submit' }, 'Passwort speichern'), msg);
+    app.replaceChildren(h('div', { class: 'auth' }, h('div', { class: 'auth-box' },
+      h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD')), h('h1', {}, 'Neues Passwort festlegen'), form)));
+  }
+
+  // ---------- Daten laden ----------
+  async function boot(user) {
+    state.user = user;
+    const { data: p } = await sb.from('profiles').select('role,full_name').eq('id', user.id).maybeSingle();
+    state.profile = p || { role: 'customer' };
+    const { data: vs } = await sb.from('ventures').select('*').order('created_at', { ascending: false });
+    state.ventures = vs || [];
+    await selectVenture(state.ventures[0]?.id);
+  }
+  async function selectVenture(id) {
+    state.venture = state.ventures.find((v) => v.id === id) || null;
+    state.threadId = undefined; state.membership = null;
+    if (state.venture) {
+      const { data } = await sb.from('memberships').select('*').eq('venture_id', state.venture.id).maybeSingle();
+      state.membership = data;
+    }
+    renderPortal();
+  }
+  async function newVenture() {
+    const title = prompt('Wie heißt das Venture?');
+    if (!title || !title.trim()) return;
+    const { data, error } = await sb.from('ventures').insert({ owner_id: state.user.id, title: title.trim() }).select().single();
+    if (error) return fail(error);
+    state.ventures.unshift(data);
+    await selectVenture(data.id);
+  }
+
+  // ---------- Portal-Rahmen ----------
+  function daysLeft(m) { return Math.ceil((new Date(m.trial_ends_at) - Date.now()) / 86400000); }
+  function status() {
+    const m = state.membership;
+    if (!m) return isAdmin() ? { text: 'Admin', cls: '' } : { text: 'Kein Zugang aktiv', cls: 'bad' };
+    if (m.plan === 'expired' || (m.plan === 'trial_full' && daysLeft(m) < 0)) return { text: 'Abgelaufen', cls: 'bad' };
+    if (m.plan === 'trial_full') { const d = daysLeft(m); return { text: 'Testphase: noch ' + d + (d === 1 ? ' Tag' : ' Tage'), cls: d <= 7 ? 'warn' : '' }; }
+    return { text: m.plan === 'full' ? 'FULL' : 'BASIC', cls: '' };
+  }
+  function banner() {
+    const s = status(); const m = state.membership;
+    if (isAdmin() && !m) return null;
+    const contact = h('a', { href: 'mailto:' + CONTACT + '?subject=' + encodeURIComponent('Venture weiterentwickeln'), style: 'color:var(--blue)' }, 'Schreib uns');
+    if (s.cls === 'bad' && m) return h('div', { class: 'banner bad' }, 'Dein Venture Workspace ist abgelaufen. Möchtest du dein Venture weiterentwickeln? ', contact, ' und wähle BASIC oder FULL.');
+    if (s.cls === 'bad') return h('div', { class: 'banner bad' }, 'Für dieses Venture ist noch kein Zugang aktiv. ', contact, ', wenn du Hilfe brauchst.');
+    if (s.cls === 'warn') return h('div', { class: 'banner warn' }, 'Deine Testphase endet bald. Danach kannst du mit BASIC selbstständig oder mit FULL samt BLACKFJORD-Begleitung weitermachen. ', contact, '.');
+    return null;
+  }
+
+  function renderPortal() {
+    if (!state.venture) {
+      app.replaceChildren(
+        h('header', { class: 'top' }, h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD'), h('small', {}, 'Venture Lab')),
+          h('div', { class: 'top-right' }, isAdmin() ? h('button', { class: 'btn', onclick: newVenture }, 'Venture anlegen') : null,
+            h('button', { class: 'btn ghost sm', onclick: () => sb.auth.signOut() }, 'Abmelden'))),
+        h('div', { class: 'pad' }, h('h2', {}, 'Noch kein Venture'),
+          h('p', { class: 'muted' }, isAdmin() ? 'Lege dein erstes Venture an, um das Portal zu testen.' : 'Sobald du ein BLACKFJORD-Paket gebucht hast, richten wir dein Venture Workspace ein.')));
+      return;
+    }
+    const s = status();
+    const sel = h('select', { 'aria-label': 'Venture wählen', onchange: (e) => selectVenture(e.target.value) },
+      state.ventures.map((v) => h('option', { value: v.id, selected: v.id === state.venture.id }, v.title)));
+    const top = h('header', { class: 'top' },
+      h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD'), h('small', {}, 'Venture Lab')),
+      h('div', { class: 'top-right' }, sel, h('span', { class: 'badge ' + s.cls }, s.text),
+        isAdmin() ? h('button', { class: 'btn ghost sm', onclick: newVenture }, '+ Venture') : null,
+        h('button', { class: 'btn ghost sm', onclick: () => sb.auth.signOut() }, 'Abmelden')));
+    const nav = h('nav', { class: 'tabs', 'aria-label': 'Bereiche' },
+      TABS.map(([id, label]) => h('button', {
+        'aria-current': state.tab === id ? 'true' : 'false',
+        onclick: () => { state.tab = id; renderPortal(); }
+      }, label)));
+    app.replaceChildren(...[top, banner(), nav, h('main', { id: 'content', class: state.tab === 'chat' ? 'chatmode' : '' })].filter(Boolean));
+    // Höhe für den Chat: Rahmen abziehen
+    const chrome = top.offsetHeight + (app.querySelector('.banner')?.offsetHeight || 0) + nav.offsetHeight;
+    document.documentElement.style.setProperty('--chrome', chrome + 'px');
+    renderTab();
+  }
+
+  async function renderTab() {
+    const c = document.getElementById('content');
+    const fn = { chat: renderChat, memory: renderMemory, tasks: renderTasks, docs: renderDocs, msgs: renderMsgs }[state.tab];
+    try { await fn(c); } catch (e) { c.replaceChildren(h('p', { class: 'err pad' }, 'Fehler beim Laden: ' + e.message)); }
+  }
+
+  // ---------- KI-Chat ----------
+  async function callChat(payload) {
+    const { data, error } = await sb.functions.invoke('venture-ai-chat', { body: payload });
+    if (error) {
+      let msg = 'Die KI ist gerade nicht erreichbar. Versuch es gleich noch einmal.';
+      try { const j = await error.context.json(); if (j?.error) msg = j.error; } catch (_) { /* Standardtext */ }
+      throw new Error(msg);
+    }
+    return data;
+  }
+
+  async function renderChat(c) {
+    const v = state.venture;
+    const { data: threads } = await sb.from('chat_threads').select('id,title,created_at').eq('venture_id', v.id).order('created_at', { ascending: false });
+    if (state.threadId === undefined) state.threadId = threads?.[0]?.id ?? null;
+
+    const sel = h('select', { 'aria-label': 'Chat wählen', onchange: (e) => { state.threadId = e.target.value || null; renderChat(c); } },
+      h('option', { value: '' }, 'Neuer Chat'),
+      (threads || []).map((t) => h('option', { value: t.id, selected: t.id === state.threadId }, t.title + ' (' + fmt(t.created_at) + ')')));
+    const box = h('div', { class: 'msgs', 'aria-live': 'polite' });
+    const ta = h('textarea', { rows: 1, placeholder: 'Schreib deiner Venture AI …', 'aria-label': 'Nachricht' });
+    const sendBtn = h('button', { class: 'btn', type: 'button' }, 'Senden');
+
+    const bubble = (role, text, cls) => { const b = h('div', { class: 'msg ' + role + (cls ? ' ' + cls : '') }, text); box.append(b); box.scrollTop = box.scrollHeight; return b; };
+
+    if (state.threadId) {
+      const { data: msgs } = await sb.from('chat_messages').select('role,content').eq('thread_id', state.threadId).order('created_at');
+      (msgs || []).forEach((m) => bubble(m.role, m.content));
+    } else {
+      box.append(h('div', { class: 'empty' }, h('p', {}, 'Erzähl von deiner Idee. Venture AI hilft dir bei Zielgruppe, Markt, Preis und Business Model und merkt sich deinen Projektstand.')));
+    }
+
+    let busy = false;
+    async function send() {
+      const text = ta.value.trim();
+      if (!text || busy) return;
+      busy = true; sendBtn.disabled = true; ta.value = '';
+      box.querySelector('.empty')?.remove();
+      bubble('user', text);
+      const wait = bubble('assistant', 'Venture AI schreibt …', 'wait');
+      const isNew = !state.threadId;
+      try {
+        const r = await callChat({ venture_id: v.id, thread_id: state.threadId, message: text });
+        state.threadId = r.thread_id;
+        wait.className = 'msg assistant'; wait.textContent = r.reply;
+        if (isNew) { sel.insertBefore(new Option(text.slice(0, 60) + ' (' + fmt(Date.now()) + ')', r.thread_id), sel.options[1]); sel.value = r.thread_id; }
+        if (r.memory_saved) box.append(h('div', { class: 'note' }, r.memory_saved + (r.memory_saved === 1 ? ' Eintrag' : ' Einträge') + ' im Gedächtnis gespeichert'));
+      } catch (e) {
+        wait.className = 'msg assistant err'; wait.textContent = e.message;
+      }
+      busy = false; sendBtn.disabled = false; box.scrollTop = box.scrollHeight; ta.focus();
+    }
+    sendBtn.addEventListener('click', send);
+    ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+    ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 160) + 'px'; });
+
+    c.replaceChildren(h('div', { class: 'chatbar' }, sel), box, h('div', { class: 'composer' }, ta, sendBtn));
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // ---------- Gedächtnis ----------
+  const KINDS = { fact: 'Fakt', decision: 'Entscheidung', goal: 'Ziel', insight: 'Erkenntnis', risk: 'Risiko' };
+  async function renderMemory(c) {
+    const v = state.venture;
+    const { data } = await sb.from('venture_memory').select('*').eq('venture_id', v.id).order('created_at', { ascending: false });
+    const kind = h('select', { 'aria-label': 'Art' }, Object.entries(KINDS).map(([k, l]) => h('option', { value: k }, l)));
+    const txt = h('input', { type: 'text', class: 'grow2', placeholder: 'Was soll sich Venture AI merken?', maxlength: 500, 'aria-label': 'Eintrag' });
+    const add = async () => {
+      if (!txt.value.trim()) return;
+      const { error } = await sb.from('venture_memory').insert({ venture_id: v.id, kind: kind.value, content: txt.value.trim() });
+      if (error) return fail(error);
+      renderMemory(c);
+    };
+    txt.addEventListener('keydown', (e) => { if (e.key === 'Enter') add(); });
+    c.replaceChildren(
+      h('h2', {}, 'Projektgedächtnis'),
+      h('p', { class: 'muted' }, 'Das weiß Venture AI über dein Venture. Neue Fakten und Entscheidungen aus dem Chat landen hier automatisch.'),
+      h('div', { class: 'addrow' }, kind, txt, h('button', { class: 'btn', onclick: add }, 'Merken')),
+      h('div', { class: 'list' }, (data || []).length ? data.map((m) => h('div', { class: 'item' },
+        h('span', { class: 'chip' }, KINDS[m.kind] || m.kind),
+        h('div', { class: 'grow' }, m.content, h('div', { class: 'meta' }, fmt(m.created_at))),
+        h('button', { class: 'x', 'aria-label': 'Eintrag löschen', onclick: async () => { await sb.from('venture_memory').delete().eq('id', m.id); renderMemory(c); } }, '×')))
+        : h('p', { class: 'muted' }, 'Noch nichts gespeichert. Starte im KI-Chat oder trag oben etwas ein.')));
+  }
+
+  // ---------- Aufgaben ----------
+  const NEXT = { open: 'doing', doing: 'done', done: 'open' };
+  const SYM = { open: '○', doing: '◐', done: '●' };
+  const SLABEL = { open: 'offen', doing: 'in Arbeit', done: 'erledigt' };
+  async function renderTasks(c) {
+    const v = state.venture;
+    const { data } = await sb.from('tasks').select('*').eq('venture_id', v.id).order('created_at');
+    const title = h('input', { type: 'text', class: 'grow2', placeholder: 'Neue Aufgabe', maxlength: 200, 'aria-label': 'Aufgabe' });
+    const due = h('input', { type: 'date', 'aria-label': 'Fällig am' });
+    const who = h('select', { 'aria-label': 'Zuständig' }, h('option', { value: 'customer' }, 'Ich'), h('option', { value: 'blackfjord' }, 'BLACKFJORD'));
+    const add = async () => {
+      if (!title.value.trim()) return;
+      const { error } = await sb.from('tasks').insert({ venture_id: v.id, title: title.value.trim(), due_date: due.value || null, assigned_to: who.value });
+      if (error) return fail(error);
+      renderTasks(c);
+    };
+    title.addEventListener('keydown', (e) => { if (e.key === 'Enter') add(); });
+    const order = { doing: 0, open: 1, done: 2 };
+    const sorted = [...(data || [])].sort((a, b) => order[a.status] - order[b.status]);
+    c.replaceChildren(
+      h('h2', {}, 'Aufgaben und Roadmap'),
+      h('div', { class: 'addrow', style: 'margin-top:14px' }, title, due, who, h('button', { class: 'btn', onclick: add }, 'Hinzufügen')),
+      h('div', { class: 'list' }, sorted.length ? sorted.map((t) => h('div', { class: 'item' + (t.status === 'done' ? ' done' : '') },
+        h('button', { class: 'status', 'aria-label': 'Status ändern, aktuell ' + SLABEL[t.status], title: SLABEL[t.status], onclick: async () => { await sb.from('tasks').update({ status: NEXT[t.status] }).eq('id', t.id); renderTasks(c); } }, SYM[t.status]),
+        h('div', { class: 'grow' }, t.title, h('div', { class: 'meta' }, SLABEL[t.status] + (t.due_date ? ' · fällig ' + fmt(t.due_date) : ''))),
+        h('span', { class: 'chip' }, t.assigned_to === 'blackfjord' ? 'BLACKFJORD' : 'Kunde'),
+        h('button', { class: 'x', 'aria-label': 'Aufgabe löschen', onclick: async () => { await sb.from('tasks').delete().eq('id', t.id); renderTasks(c); } }, '×')))
+        : h('p', { class: 'muted' }, 'Noch keine Aufgaben. Leg die erste an oder lass dir im KI-Chat einen Plan vorschlagen.')));
+  }
+
+  // ---------- Dokumente ----------
+  async function renderDocs(c) {
+    const v = state.venture;
+    const { data } = await sb.from('documents').select('*').eq('venture_id', v.id).order('created_at', { ascending: false });
+    const file = h('input', { type: 'file', id: 'fu', 'aria-label': 'Datei hochladen' });
+    const msg = h('p', { class: 'muted', role: 'status' });
+    file.addEventListener('change', async () => {
+      const f = file.files[0]; if (!f) return;
+      if (f.size > 10 * 1024 * 1024) { msg.className = 'err'; msg.textContent = 'Die Datei ist größer als 10 MB.'; return; }
+      msg.className = 'muted'; msg.textContent = 'Lädt hoch …';
+      const path = v.id + '/' + Date.now() + '-' + f.name.replace(/[^\w.\-]+/g, '_');
+      const up = await sb.storage.from('venture-docs').upload(path, f);
+      if (up.error) { msg.className = 'err'; msg.textContent = 'Hochladen fehlgeschlagen: ' + up.error.message; return; }
+      const { error } = await sb.from('documents').insert({ venture_id: v.id, name: f.name, storage_path: path, created_by: state.user.id });
+      if (error) { msg.className = 'err'; msg.textContent = error.message; return; }
+      renderDocs(c);
+    });
+    c.replaceChildren(
+      h('h2', {}, 'Dokumente'),
+      h('p', { class: 'muted' }, 'Deine Dateien sind privat und nur für dich und BLACKFJORD sichtbar (bis 10 MB pro Datei).'),
+      h('div', { style: 'margin-top:14px' }, file), msg,
+      h('div', { class: 'list' }, (data || []).length ? data.map((d) => h('div', { class: 'item' },
+        h('div', { class: 'grow' },
+          d.storage_path ? d.name : h('details', {}, h('summary', {}, d.name), h('pre', {}, d.content || '')),
+          h('div', { class: 'meta' }, fmt(d.created_at) + (d.generated ? ' · von Venture AI erstellt' : ''))),
+        d.storage_path ? h('button', {
+          class: 'btn ghost sm', onclick: async () => {
+            const { data: s, error } = await sb.storage.from('venture-docs').createSignedUrl(d.storage_path, 60);
+            if (error) return fail(error);
+            window.open(s.signedUrl, '_blank', 'noopener');
+          }
+        }, 'Öffnen') : null,
+        h('button', {
+          class: 'x', 'aria-label': 'Dokument löschen', onclick: async () => {
+            if (!confirm('Dokument „' + d.name + '“ löschen?')) return;
+            if (d.storage_path) await sb.storage.from('venture-docs').remove([d.storage_path]);
+            await sb.from('documents').delete().eq('id', d.id);
+            renderDocs(c);
+          }
+        }, '×')))
+        : h('p', { class: 'muted' }, 'Noch keine Dokumente. Lade Unterlagen hoch, die BLACKFJORD und du gemeinsam nutzen.')));
+  }
+
+  // ---------- Kommunikation mit BLACKFJORD ----------
+  async function renderMsgs(c) {
+    const v = state.venture;
+    const { data } = await sb.from('comm_messages').select('*').eq('venture_id', v.id).order('created_at');
+    const ta = h('textarea', { rows: 3, placeholder: 'Nachricht an ' + (isAdmin() ? 'den Kunden' : 'BLACKFJORD'), maxlength: 4000, 'aria-label': 'Nachricht' });
+    const send = async () => {
+      if (!ta.value.trim()) return;
+      const { error } = await sb.from('comm_messages').insert({ venture_id: v.id, sender_id: state.user.id, body: ta.value.trim() });
+      if (error) return fail(error);
+      renderMsgs(c);
+    };
+    c.replaceChildren(
+      h('h2', {}, 'Nachrichten an BLACKFJORD'),
+      h('p', { class: 'muted' }, 'Fragen, Feedback und Reviews laufen hier direkt zwischen dir und BLACKFJORD.'),
+      h('div', { class: 'list' }, (data || []).length ? data.map((m) => {
+        const mine = m.sender_id === state.user.id;
+        return h('div', { class: 'bubble-msg' }, h('div', { class: 'meta' }, (mine ? 'Du' : (isAdmin() ? 'Kunde' : 'BLACKFJORD')) + ' · ' + fmtT(m.created_at)), h('p', {}, m.body));
+      }) : h('p', { class: 'muted' }, 'Noch keine Nachrichten.')),
+      h('div', { style: 'margin-top:16px' }, ta, h('button', { class: 'btn', style: 'margin-top:10px', onclick: send }, 'Nachricht senden')));
+  }
+
+  // ---------- Start ----------
+  sb.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') {
+      Object.assign(state, { user: null, profile: null, ventures: [], venture: null, membership: null, tab: 'chat', threadId: undefined });
+      renderLogin();
+    }
+  });
+
+  (async () => {
+    const recovery = location.hash.includes('type=recovery');
+    const { data: { session } } = await sb.auth.getSession();
+    if (recovery && session) return renderRecovery();
+    if (session) return boot(session.user);
+    renderLogin();
+  })();
+})();
+</script>
+</body>
+</html>
