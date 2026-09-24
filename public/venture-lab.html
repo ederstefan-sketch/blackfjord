@@ -151,6 +151,7 @@
       if (k === 'class') e.className = v;
       else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
       else e.setAttribute(k, v === true ? '' : v
+
 );
     }
     for (const c of kids.flat()) {
@@ -190,7 +191,8 @@
       }
     },
       h('label', { for: 'em' }, 'E-Mail'), email,
-      h('label', { for: 'pw' }, 'Passwort')
+      h('label', { for: 'pw' }, 'Passwort'
+)
 , pass,
       btn, msg,
       h('p', { class: 'row' }, h('button', {
@@ -198,7 +200,15 @@
           if (!email.value.trim()) { msg.textContent = 'Trag oben deine E-Mail ein, dann senden wir dir einen Link.'; return; }
           const { error } = await sb.auth.resetPasswordForEmail(email.value.trim(), { redirectTo: location.origin + '/venture-lab' });
           msg.className = 'row ' + (error ? 'err' : 'muted');
-          msg.textContent = error ? 'Der Link konnte nicht gesendet werden.' : 'Wir haben dir einen Link zum Zurücksetzen gesendet.';
+          if (error) {
+            msg.textContent = error.status === 429
+              ? 'Es wurden zu viele Anfragen gesendet. Bitte versuch es in einer Stunde noch einmal.'
+              : error.status === 422
+                ? 'Die Weiterleitungs-URL ist in Supabase nicht freigegeben. Bitte Administrator informieren.'
+                : 'Der Link konnte nicht gesendet werden (' + (error.message || 'unbekannter Fehler') + ').';
+          } else {
+            msg.textContent = 'Wir haben dir einen Link zum Zurücksetzen gesendet. Bitte schau auch in den Spam-Ordner.';
+          }
         }
       }, 'Passwort vergessen'))
     );
@@ -265,7 +275,8 @@
     return { text: m.plan === 'full' ? 'FULL' : 'BASIC', cls: '' };
   }
   function banner() {
-   
+ 
+  
  const s = status(); const m = state.membership;
     if (isAdmin() && !m) return null;
     const contact = h('a', { href: 'mailto:' + CONTACT + '?subject=' + encodeURIComponent('Venture weiterentwickeln'), style: 'color:var(--blue)' }, 'Schreib uns');
@@ -327,7 +338,8 @@
     const { data: threads } = await sb.from('chat_threads').select('id,title,created_at').eq('venture_id', v.id).order('created_at', { ascending: false });
     if (state.threadId === undefined) state.threadId = threads?.[0]?.id ?? null;
 
-    const sel = h('select', { 'aria-label': 'Chat wählen', onchange: (e) => { state.threadId = e.target.value || null; renderChat(c); } },
+    const sel = h(
+'select', { 'aria-label': 'Chat wählen', onchange: (e) => { state.threadId = e.target.value || null; renderChat(c); } },
       h('option', { value: '' }, 'Neuer Chat'),
       (threads || []).map((t) => h('option', { value: t.id, selected: t.id === state.threadId }, t.title + ' (' + fmt(t.created_at) + ')')));
     const box = h('div', { class: 'msgs', 'aria-live': 'polite' });
@@ -441,7 +453,8 @@
       const path = v.id + '/' + Date.now() + '-' + f.name.replace(/[^\w.\-]+/g, '_');
       const up = await sb.storage.from('venture-docs').upload(path, f);
       if (up.error) { msg.className = 'err'; msg.textContent = 'Hochladen fehlgeschlagen: ' + up.error.message; return; }
-      const { error } = await sb.from('documents').insert({ venture_id: v.id, name: f.name,
+      const { error } = await sb.from('documents').insert({ venture_id: v.id, name: f.
+name,
  storage_path: path, created_by: state.user.id });
       if (error) { msg.className = 'err'; msg.textContent = error.message; return; }
       renderDocs(c);
@@ -476,7 +489,8 @@
   async function renderMsgs(c) {
     const v = state.venture;
     const { data } = await sb.from('comm_messages').select('*').eq('venture_id', v.id).order('created_at');
-    const ta = h('textarea', { rows: 3, placeholder: 'Nachricht an ' + (isAdmin() ? 'den Kunden' : 'BLACKFJORD'), maxlength: 4000, 'aria-label': 'Nachricht' });
+    const ta = h('textarea', { rows: 3, placeholder: 'Nachricht an ' + (isAdmin() ? 'den Kunden' : 'BLACKFJORD'), maxlength: 4000, 
+'aria-label': 'Nachricht' });
     const send = async () => {
       if (!ta.value.trim()) return;
       const { error } = await sb.from('comm_messages').insert({ venture_id: v.id, sender_id: state.user.id, body: ta.value.trim() });
