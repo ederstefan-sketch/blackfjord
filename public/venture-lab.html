@@ -51,6 +51,7 @@
 
   /* Login */
   .auth { min-height: 100dvh; displ
+
 ay: grid; place-items: center; padding: 24px; }
   .auth-box { width: 100%; max-width: 380px; }
   .auth-box h1 { font-size: 24px; margin: 28px 0 6px; font-weight: 600; letter-spacing: -.01em; }
@@ -86,7 +87,8 @@ ay: grid; place-items: center; padding: 24px; }
   main#content.chatmode { padding: 0; height: calc(100dvh - var(--chrome, 160px)); display: flex; flex-direction: column; }
 
   /* Chat */
-  .ch
+  .c
+h
 atbar { padding: 12px 20px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; }
   .chatbar select { flex: 1; }
   .msgs { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
@@ -114,7 +116,8 @@ atbar { padding: 12px 20px; border-bottom: 1px solid var(--line); display: flex;
   .done .grow { text-decoration: line-through; color: var(--muted); }
   .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 20px; padding: 4px 8px; }
   .x:hover { color: var(--err); }
-  h2 { font-size: 20px; margin: 0 0 4px; fo
+  h2 { font-size: 20px; margin: 0 0 4px; 
+fo
 nt-weight: 600; }
   details pre { white-space: pre-wrap; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin: 8px 0 0; }
   .bubble-msg { padding: 12px 0; border-bottom: 1px solid var(--line); }
@@ -153,7 +156,8 @@ nt-weight: 600; }
       if (v === false || v == null) continue;
       if (k === 'class') e.className = v;
       else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
-      else e.setAttribute(k, v === true ? '' : v
+      else e.setAttribute(k, v === true ? '' 
+: v
 );
     }
     for (const c of kids.flat()) {
@@ -193,7 +197,8 @@ nt-weight: 600; }
       }
     },
       h('label', { for: 'em' }, 'E-Mail'), email,
-      h('label', { for: 'pw' }, 'Passwort')
+      h('label', { for: 'pw' }, 'Passwo
+rt')
 , pass,
       btn, msg,
       h('p', { class: 'row' }, h('button', {
@@ -227,7 +232,8 @@ nt-weight: 600; }
         await boot(data.user);
       }
     }, h('label', { for: 'np' }, 'Neues Passwort (mindestens 8 Zeichen)'), pass, h('button', { class: 'btn', type: 'submit' }, 'Passwort speichern'), msg);
-    app.replaceChildren(h('div', { class: 'auth
+    app.replaceChildren(h('div', { class: 
+'auth
 ' }, h('div', { class: 'auth-box' },
       h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD')), h('h1', {}, 'Neues Passwort festlegen'), form)));
   }
@@ -268,7 +274,8 @@ nt-weight: 600; }
     if (m.plan === 'trial_full') { const d = daysLeft(m); return { text: 'Testphase: noch ' + d + (d === 1 ? ' Tag' : ' Tage'), cls: d <= 7 ? 'warn' : '' }; }
     return { text: m.plan === 'full' ? 'FULL' : 'BASIC', cls: '' };
   }
-  function banner() {
+  function banner()
+ {
    
  const s = status(); const m = state.membership;
     if (isAdmin() && !m) return null;
@@ -294,7 +301,8 @@ nt-weight: 600; }
       state.ventures.map((v) => h('option', { value: v.id, selected: v.id === state.venture.id }, v.title)));
     const top = h('header', { class: 'top' },
       h('div', { class: 'brand' }, logo(), h('span', {}, 'BLACKFJORD'), h('small', {}, 'Venture Lab')),
-      h('div', { class: 'top
+      h('div', { clas
+s: 'top
 -right' }, sel, h('span', { class: 'badge ' + s.cls }, s.text),
         isAdmin() ? h('button', { class: 'btn ghost sm', onclick: newVenture }, '+ Venture') : null,
         h('button', { class: 'btn ghost sm', onclick: () => sb.auth.signOut() }, 'Abmelden')));
@@ -332,7 +340,8 @@ nt-weight: 600; }
     const { data: threads } = await sb.from('chat_threads').select('id,title,created_at').eq('venture_id', v.id).order('created_at', { ascending: false });
     if (state.threadId === undefined) state.threadId = threads?.[0]?.id ?? null;
 
-    const sel = h('se
+    const sel
+ = h('se
 lect', { 'aria-label': 'Chat wählen', onchange: (e) => { state.threadId = e.target.value || null; renderChat(c); } },
       h('option', { value: '' }, 'Neuer Chat'),
       (threads || []).map((t) => h('option', { value: t.id, selected: t.id === state.threadId }, t.title + ' (' + fmt(t.created_at) + ')')));
@@ -363,7 +372,8 @@ lect', { 'aria-label': 'Chat wählen', onchange: (e) => { state.threadId = e.tar
         state.threadId = r.thread_id;
         wait.className = 'msg assistant'; wait.textContent = r.reply;
         if (isNew) { sel.insertBefore(new Option(text.slice(0, 60) + ' (' + fmt(Date.now()) + ')', r.thread_id), sel.options[1]); sel.value = r.thread_id; }
-        if (r.memory_saved) box.append(h('div', { class: 'note' }, r.memory_sa
+        if (r.memory_saved) box.append(h('div', { class: 'note' }, r.
+memory_sa
 ved + (r.memory_saved === 1 ? ' Eintrag' : ' Einträge') + ' im Gedächtnis gespeichert'));
       } catch (e) {
         wait.className = 'msg assistant err'; wait.textContent = e.message;
@@ -395,7 +405,8 @@ ved + (r.memory_saved === 1 ? ' Eintrag' : ' Einträge') + ' im Gedächtnis gesp
     c.replaceChildren(
       h('h2', {}, 'Projektgedächtnis'),
       h('p', { class: 'muted' }, 'Das weiß Venture AI über dein Venture. Neue Fakten und Entscheidungen aus dem Chat landen hier automatisch.'),
-      h('div', { class: 'addrow' }, kind, txt, h('button', { class: 'btn', onclick: add 
+      h('div', { class: 'addrow' }, kind, txt, h('button', { class: 'btn', onc
+lick: add 
 }, 'Merken')),
       h('div', { class: 'list' }, (data || []).length ? data.map((m) => h('div', { class: 'item' },
         h('span', { class: 'chip' }, KINDS[m.kind] || m.kind),
@@ -425,7 +436,8 @@ ved + (r.memory_saved === 1 ? ' Eintrag' : ' Einträge') + ' im Gedächtnis gesp
     const sorted = [...(data || [])].sort((a, b) => order[a.status] - order[b.status]);
     c.replaceChildren(
       h('h2', {}, 'Aufgaben und Roadmap'),
-      h('div', { class: 'addrow', style: 'margin-top:14px' }, title, due, who, h('button', { class: 'btn',
+      h('div', { class: 'addrow', style: 'margin-top:14px' }, title, due, who, h('button', { cl
+ass: 'btn',
  onclick: add }, 'Hinzufügen')),
       h('div', { class: 'list' }, sorted.length ? sorted.map((t) => h('div', { class: 'item' + (t.status === 'done' ? ' done' : '') },
         h('button', { class: 'status', 'aria-label': 'Status ändern, aktuell ' + SLABEL[t.status], title: SLABEL[t.status], onclick: async () => { await sb.from('tasks').update({ status: NEXT[t.status] }).eq('id', t.id); renderTasks(c); } }, SYM[t.status]),
@@ -448,7 +460,8 @@ ved + (r.memory_saved === 1 ? ' Eintrag' : ' Einträge') + ' im Gedächtnis gesp
       const path = v.id + '/' + Date.now() + '-' + f.name.replace(/[^\w.\-]+/g, '_');
       const up = await sb.storage.from('venture-docs').upload(path, f);
       if (up.error) { msg.className = 'err'; msg.textContent = 'Hochladen fehlgeschlagen: ' + up.error.message; return; }
-      const { error } = await sb.from('documents').insert({ venture_id: v.id, name: f.name,
+      const { error } = await sb.from('documents').insert({ venture_id: v.id, n
+ame: f.name,
  storage_path: path, created_by: state.user.id });
       if (error) { msg.className = 'err'; msg.textContent = error.message; return; }
       renderDocs(c);
@@ -483,7 +496,8 @@ ved + (r.memory_saved === 1 ? ' Eintrag' : ' Einträge') + ' im Gedächtnis gesp
   async function renderMsgs(c) {
     const v = state.venture;
     const { data } = await sb.from('comm_messages').select('*').eq('venture_id', v.id).order('created_at');
-    const ta = h('textarea', { rows: 3, placeholder: 'Nachricht an ' + (isAdmin() ? 'den Kunden' : 'BLACKFJORD'), maxlength: 4000, 'aria-
+    const ta = h('textarea', { rows: 3, placeholder: 'Nachricht an ' + (isAdmin() ? 'den Kunden' : 'BLACKFJORD'), maxlength:
+ 4000, 'aria-
 label': 'Nachricht' });
     const send = async () => {
       if (!ta.value.trim()) return;
@@ -513,15 +527,31 @@ label': 'Nachricht' });
   });
 
   (async () => {
+    try {
     // Wiederherstellungs-Link: Supabase nutzt je nach Flow ?code=... (Query) oder #type=recovery (Hash)
     const recovery = location.hash.includes('type=recovery') || location.search.includes('type=recovery') || location.search.includes('code=');
     const { data: { session } } = await sb.auth.getSession();
-    if (recovery && session) return renderRecovery();
+    if (recovery && session) ret
+urn renderRecovery();
     // Bei offenem Wiederherstellungs-Link ist die Session evtl. noch nicht ausgetauscht –
     // das PASSWORD_RECOVERY/SIGNED_IN-Event oben zeigt das Formular an. Erst nach Timeout Login zeigen.
-    if (recovery) return setTimeout(() => renderLogin('Der Link ist ungültig oder abgelaufen. Bitte fordere über „Passwort vergessen" einen neuen an.'), 15000);
+    if (recovery) {
+      // Der Code-Austausch (PKCE) läuft nach dem Klick auf den E-Mail-Link erst an –
+      // aktiv auf die Session warten, bis das Formular sicher erscheinen kann.
+      app.replaceChildren(h('p', { class: 'muted pad' }, 'Wiederherstellungs-Link wird geprüft …'));
+      for (let i = 0; i < 20; i++) {
+        await new Promise((r) => setTimeout(r, 500));
+        if (document.getElementById('np')) return; // Formular wurde bereits per Event angezeigt
+        const { data: { session: s } } = await sb.auth.getSession();
+        if (s) return renderRecovery();
+      }
+      return renderLogin('Der Link ist ungültig oder abgelaufen. Bitte fordere über „Passwort vergessen" einen neuen an.');
+    }
     if (session) return boot(session.user);
     renderLogin();
+    } catch (e) {
+      app.replaceChildren(h('p', { class: 'err pad' }, 'Die Seite konnte nicht geladen werden: ' + (e?.message || 'Unbekannter Fehler') + ' – Bitte Seite neu laden.'));
+    }
   })();
 })();
 </script>
