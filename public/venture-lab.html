@@ -317,7 +317,7 @@
 
   // ---------- KI-Chat ----------
   async function callChat(payload) {
-    const { data, error } = await sb.functions.invoke('venture-ai-chat', { body: payload });
+    const { data, error } = await sb.functions.invoke('venture-ai-orchestrator', { body: payload });
     if (error) {
       let msg = 'Die KI ist gerade nicht erreichbar. Versuch es gleich noch einmal.';
       try { const j = await error.context.json(); if (j?.error) msg = j.error; } catch (_) { /* Standardtext */ }
@@ -431,9 +431,12 @@
   }
 
   // ---------- Dokumente ----------
+  const AI_STATUS = { pending: 'KI: wartet', processing: 'KI: wird verarbeitet', ready: 'KI: durchsuchbar', error: 'KI: Fehler' };
   async function renderDocs(c) {
     const v = state.venture;
     const { data } = await sb.from('documents').select('*').eq('venture_id', v.id).order('created_at', { ascending: false });
+    const { data: resources } = await sb.from('venture_ai_resources').select('document_id,status').eq('venture_id', v.id);
+    const aiStatus = new Map((resources || []).map((r) => [r.document_id, r.status]));
     const file = h('input', { type: 'file', id: 'fu', 'aria-label': 'Datei hochladen' });
     const msg = h('p', { class: 'muted', role: 'status' });
     file.addEventListener('change', async () => {
@@ -443,8 +446,14 @@
       const path = v.id + '/' + Date.now() + '-' + f.name.replace(/[^\w.\-]+/g, '_');
       const up = await sb.storage.from('venture-docs').upload(path, f);
       if (up.error) { msg.className = 'err'; msg.textContent = 'Hochladen fehlgeschlagen: ' + up.error.message; return; }
-      const { error } = await sb.from('documents').insert({ venture_id: v.id, name: f.name, storage_path: path, created_by: state.user.id });
+      const { data: newDoc, error } = await sb.from('documents').insert({ venture_id: v.id, name: f.name, storage_path: path, created_by: state.user.id }).select().single();
       if (error) { msg.className = 'err'; msg.textContent = error.message; return; }
+      msg.textContent = 'Text wird gelesen …';
+      const ingest = await sb.functions.invoke('venture-document-ingest', { body: { document_id: newDoc.id } });
+      if (ingest.error) console.log('Textauslese fehlgeschlagen', ingest.error);
+      msg.textContent = 'Wird an die KI übergeben …';
+      const sync = await sb.functions.invoke('venture-ai-file-sync', { body: { venture_id: v.id, document_id: newDoc.id } });
+      if (sync.error) console.log('KI-Index fehlgeschlagen', sync.error);
       renderDocs(c);
     });
     c.replaceChildren(
@@ -455,6 +464,7 @@
         h('div', { class: 'grow' },
           d.storage_path ? d.name : h('details', {}, h('summary', {}, d.name), h('pre', {}, d.content || '')),
           h('div', { class: 'meta' }, fmt(d.created_at) + (d.generated ? ' · von Venture AI erstellt' : ''))),
+        aiStatus.has(d.id) ? h('span', { class: 'chip' }, AI_STATUS[aiStatus.get(d.id)] || aiStatus.get(d.id)) : null,
         d.storage_path ? h('button', {
           class: 'btn ghost sm', onclick: async () => {
             const { data: s, error } = await sb.storage.from('venture-docs').createSignedUrl(d.storage_path, 60);
