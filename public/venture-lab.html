@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Venture Lab – BLACKFJORD</title>
-<link rel="icon" type="image/png" href="/favicon.png">
 <style>
   :root {
     --bg: #100F15;
@@ -47,8 +46,7 @@
   .btn.sm { padding: 6px 12px; font-size: 14px; }
   .link { background: none; border: 0; color: var(--blue); cursor: pointer; padding: 0; text-decoration: underline; }
   .link:hover { color: var(--blue-hi); }
-  input[type=text], input[type=email], input[type=password], inp
-ut[type=date], select, textarea {
+  input[type=text], input[type=email], input[type=password], input[type=date], select, textarea {
     background: rgba(10,10,15,.55); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; width: 100%;
   }
   textarea { resize: none; }
@@ -82,8 +80,7 @@ ut[type=date], select, textarea {
   .banner.bad { border-left: 3px solid var(--err); }
 
   nav.tabs { display: flex; gap: 4px; padding: 0 12px; border-bottom: 1px solid var(--line); overflow-x: auto; }
-  nav.t
-abs button {
+  nav.tabs button {
     background: none; border: 0; padding: 12px 12px; color: var(--muted); cursor: pointer; white-space: nowrap;
     border-bottom: 2px solid transparent; margin-bottom: -1px;
   }
@@ -112,8 +109,7 @@ abs button {
   .item .grow { flex: 1; min-width: 0; overflow-wrap: anywhere; }
   .item .meta { font-size: 13px; color: var(--muted); }
   .chip { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; color: var(--silver); white-space: nowrap; }
-  .addrow { display: fl
-ex; gap: 10px; flex-wrap: wrap; }
+  .addrow { display: flex; gap: 10px; flex-wrap: wrap; }
   .addrow > * { flex: 1 1 140px; }
   .addrow .grow2 { flex: 3 1 240px; }
   .addrow .btn { flex: 0 0 auto; }
@@ -150,8 +146,7 @@ ex; gap: 10px; flex-wrap: wrap; }
   const app = document.getElementById('app');
 
   const state = { user: null, profile: null, ventures: [], venture: null, membership: null, tab: 'chat', threadId: undefined };
-  const TABS = [['chat', 'KI-Chat'],
- ['memory', 'Gedächtnis'], ['tasks', 'Aufgaben'], ['docs', 'Dokumente'], ['msgs', 'BLACKFJORD']];
+  const TABS = [['chat', 'KI-Chat'], ['memory', 'Gedächtnis'], ['tasks', 'Aufgaben'], ['docs', 'Dokumente'], ['msgs', 'BLACKFJORD']];
 
   // ---------- Hilfsfunktionen (alle Inhalte werden als Text eingefügt, nie als HTML) ----------
   function h(tag, props, ...kids) {
@@ -189,8 +184,7 @@ ex; gap: 10px; flex-wrap: wrap; }
   function renderLogin(message) {
     const email = h('input', { type: 'email', id: 'em', autocomplete: 'username', required: true });
     const pass = h('input', { type: 'password', id: 'pw', autocomplete: 'current-password', required: true });
-    const msg = h('p', { cl
-ass: 'row err', role: 'alert' }, message || '');
+    const msg = h('p', { class: 'row err', role: 'alert' }, message || '');
     const btn = h('button', { class: 'btn', type: 'submit' }, 'Anmelden');
     const form = h('form', {
       onsubmit: async (ev) => {
@@ -226,7 +220,6 @@ ass: 'row err', role: 'alert' }, message || '');
     const pass = h('input', { type: 'password', id: 'np', autocomplete: 'new-password', minlength: 8, required: true });
     const msg = h('p', { class: 'row err', role: 'alert' });
     const form = h('form', {
-
       onsubmit: async (ev) => {
         ev.preventDefault();
         const { error } = await sb.auth.updateUser({ password: pass.value });
@@ -268,8 +261,7 @@ ass: 'row err', role: 'alert' }, message || '');
   }
 
   // ---------- Portal-Rahmen ----------
-  function daysLeft(m) { return Ma
-th.ceil((new Date(m.trial_ends_at) - Date.now()) / 86400000); }
+  function daysLeft(m) { return Math.ceil((new Date(m.trial_ends_at) - Date.now()) / 86400000); }
   function status() {
     const m = state.membership;
     if (!m) return isAdmin() ? { text: 'Admin', cls: '' } : { text: 'Kein Zugang aktiv', cls: 'bad' };
@@ -294,8 +286,7 @@ th.ceil((new Date(m.trial_ends_at) - Date.now()) / 86400000); }
           h('div', { class: 'top-right' }, isAdmin() ? h('button', { class: 'btn', onclick: newVenture }, 'Venture anlegen') : null,
             h('button', { class: 'btn ghost sm', onclick: () => sb.auth.signOut() }, 'Abmelden'))),
         h('div', { class: 'pad' }, h('h2', {}, 'Noch kein Venture'),
-          h('p', { class: 'muted' }, isAdmin() ? 'Lege dein e
-rstes Venture an, um das Portal zu testen.' : 'Sobald du ein BLACKFJORD-Paket gebucht hast, richten wir dein Venture Workspace ein.')));
+          h('p', { class: 'muted' }, isAdmin() ? 'Lege dein erstes Venture an, um das Portal zu testen.' : 'Sobald du ein BLACKFJORD-Paket gebucht hast, richten wir dein Venture Workspace ein.')));
       return;
     }
     const s = status();
@@ -328,8 +319,7 @@ rstes Venture an, um das Portal zu testen.' : 'Sobald du ein BLACKFJORD-Paket ge
   async function callChat(payload) {
     const { data, error } = await sb.functions.invoke('venture-ai-orchestrator', { body: payload });
     if (error) {
-     
- let msg = 'Die KI ist gerade nicht erreichbar. Versuch es gleich noch einmal.';
+      let msg = 'Die KI ist gerade nicht erreichbar. Versuch es gleich noch einmal.';
       try { const j = await error.context.json(); if (j?.error) msg = j.error; } catch (_) { /* Standardtext */ }
       throw new Error(msg);
     }
@@ -363,8 +353,7 @@ rstes Venture an, um das Portal zu testen.' : 'Sobald du ein BLACKFJORD-Paket ge
       if (!text || busy) return;
       busy = true; sendBtn.disabled = true; ta.value = '';
       box.querySelector('.empty')?.remove();
-      bubble('user'
-, text);
+      bubble('user', text);
       const wait = bubble('assistant', 'Venture AI schreibt …', 'wait');
       const isNew = !state.threadId;
       try {
@@ -395,8 +384,7 @@ rstes Venture an, um das Portal zu testen.' : 'Sobald du ein BLACKFJORD-Paket ge
     const txt = h('input', { type: 'text', class: 'grow2', placeholder: 'Was soll sich Venture AI merken?', maxlength: 500, 'aria-label': 'Eintrag' });
     const add = async () => {
       if (!txt.value.trim()) return;
- 
-     const { error } = await sb.from('venture_memory').insert({ venture_id: v.id, kind: kind.value, content: txt.value.trim() });
+      const { error } = await sb.from('venture_memory').insert({ venture_id: v.id, kind: kind.value, content: txt.value.trim() });
       if (error) return fail(error);
       renderMemory(c);
     };
@@ -424,8 +412,7 @@ rstes Venture an, um das Portal zu testen.' : 'Sobald du ein BLACKFJORD-Paket ge
     const who = h('select', { 'aria-label': 'Zuständig' }, h('option', { value: 'customer' }, 'Ich'), h('option', { value: 'blackfjord' }, 'BLACKFJORD'));
     const add = async () => {
       if (!title.value.trim()) return;
-      const { error } = await sb.from('tas
-ks').insert({ venture_id: v.id, title: title.value.trim(), due_date: due.value || null, assigned_to: who.value });
+      const { error } = await sb.from('tasks').insert({ venture_id: v.id, title: title.value.trim(), due_date: due.value || null, assigned_to: who.value });
       if (error) return fail(error);
       renderTasks(c);
     };
@@ -448,8 +435,7 @@ ks').insert({ venture_id: v.id, title: title.value.trim(), due_date: due.value |
   async function renderDocs(c) {
     const v = state.venture;
     const { data } = await sb.from('documents').select('*').eq('venture_id', v.id).order('created_at', { ascending: false });
-    const { data: resources } = await sb.from('venture_ai_resources').select('document_id,status').eq('v
-enture_id', v.id);
+    const { data: resources } = await sb.from('venture_ai_resources').select('document_id,status').eq('venture_id', v.id);
     const aiStatus = new Map((resources || []).map((r) => [r.document_id, r.status]));
     const file = h('input', { type: 'file', id: 'fu', 'aria-label': 'Datei hochladen' });
     const msg = h('p', { class: 'muted', role: 'status' });
@@ -476,8 +462,7 @@ enture_id', v.id);
       h('div', { style: 'margin-top:14px' }, file), msg,
       h('div', { class: 'list' }, (data || []).length ? data.map((d) => h('div', { class: 'item' },
         h('div', { class: 'grow' },
-          d.storage_
-path ? d.name : h('details', {}, h('summary', {}, d.name), h('pre', {}, d.content || '')),
+          d.storage_path ? d.name : h('details', {}, h('summary', {}, d.name), h('pre', {}, d.content || '')),
           h('div', { class: 'meta' }, fmt(d.created_at) + (d.generated ? ' · von Venture AI erstellt' : ''))),
         aiStatus.has(d.id) ? h('span', { class: 'chip' }, AI_STATUS[aiStatus.get(d.id)] || aiStatus.get(d.id)) : null,
         d.storage_path ? h('button', {
@@ -511,8 +496,7 @@ path ? d.name : h('details', {}, h('summary', {}, d.name), h('pre', {}, d.conten
     };
     c.replaceChildren(
       h('h2', {}, 'Nachrichten an BLACKFJORD'),
-      h('p', { class: 'muted' }, 'Fragen, Feedback und Reviews laufen hier direk
-t zwischen dir und BLACKFJORD.'),
+      h('p', { class: 'muted' }, 'Fragen, Feedback und Reviews laufen hier direkt zwischen dir und BLACKFJORD.'),
       h('div', { class: 'list' }, (data || []).length ? data.map((m) => {
         const mine = m.sender_id === state.user.id;
         return h('div', { class: 'bubble-msg' }, h('div', { class: 'meta' }, (mine ? 'Du' : (isAdmin() ? 'Kunde' : 'BLACKFJORD')) + ' · ' + fmtT(m.created_at)), h('p', {}, m.body));
