@@ -24,7 +24,7 @@ main#content{max-width:1180px;margin:0 auto;padding:24px 20px}.grid{display:grid
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (()=>{"use strict";
-const SB_URL="https://moirwvfslgyskxvcfxre.supabase.co",SB_KEY="sb_publishable_yccVaz2j7stfTKGMd-rHtg_PiBq19g";
+const SB_URL="https://moirwvfslgyskxvcfxre.supabase.co",SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vaXJ3dmZzbGd5c2t4dmNmeHJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyMTgzMDIsImV4cCI6MjEwNTc5NDMwMn0.xvMfngLVyZ5baHSNh830mmGKGlLBMrPkY7k8q_wp-_Q";
 const sb=supabase.createClient(SB_URL,SB_KEY),app=document.getElementById("app");
 const S={user:null,profile:null,ventures:[],venture:null,membership:null,tab:"overview",threadId:null,admin:false,drawer:false,adminView:"dashboard"};
 const h=(t,p,...c)=>{const e=document.createElement(t);Object.entries(p||{}).forEach(([k,v])=>{if(v==null||v===false)return;if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else if(k==="class")e.className=v;else if(k==="style"&&typeof v==="object")Object.assign(e.style,v);else e.setAttribute(k,v===true?"":v)});c.flat().forEach(x=>{if(x==null||x===false)return;e.append(typeof x==="object"?x:document.createTextNode(String(x)))});return e};
