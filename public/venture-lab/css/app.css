@@ -42,7 +42,8 @@
     background: rgba(10,10,15,.55); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; width: 100%;
   }
   textarea { resize: none; }
-  label { display: block; font-size: 14px; color: var(--muted); margin: 14px 0 6px; }
+  label { display: block; font-size: 14px; 
+color: var(--muted); margin: 14px 0 6px; }
 
   /* Login */
   .auth { min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
@@ -76,7 +77,8 @@
     background: none; border: 0; padding: 12px 12px; color: var(--muted); cursor: pointer; white-space: nowrap;
     border-bottom: 2px solid transparent; margin-bottom: -1px;
   }
-  nav.tabs button[aria-current=true] { color: var(--text); border-bottom-color: var(--blue); }
+  nav.tabs button[aria-current=true] { color: var(--text); 
+border-bottom-color: var(--blue); }
 
   main#content { max-width: 860px; margin: 0 auto; padding: 20px; }
   main#content.chatmode { padding: 0; height: calc(100dvh - var(--chrome, 160px)); display: flex; flex-direction: column; }
@@ -105,7 +107,8 @@
   .addrow > * { flex: 1 1 140px; }
   .addrow .grow2 { flex: 3 1 240px; }
   .addrow .btn { flex: 0 0 auto; }
-  .status { background: none; border: 0; font-size: 22px; cursor: pointer; color: var(--blue); line-height: 1; }
+  .status { background: none; border: 0; font-size: 22px; cursor: pointer; color: var(--blue); line-height: 1
+; }
   .done .grow { text-decoration: line-through; color: var(--muted); }
   .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 20px; padding: 4px 8px; }
   .x:hover { color: var(--err); }
@@ -118,4 +121,124 @@
   @media (prefers-reduced-motion: no-preference) {
     .auth-box { animation: rise .35s ease-out both; }
     @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
+
+
+  /* ============================================================
+     Admin Center (30-portal.js) – Styles im bestehenden Design
+     ============================================================ */
+  .btn-primary { background: var(--blue); color: #071022; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 600; cursor: pointer; transition: background .2s ease; }
+  .btn-primary:hover { background: var(--blue-hi); }
+  .btn-secondary { background: transparent; color: var(--silver); border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; font-weight: 500; cursor: pointer; transition: border-color .2s ease, background .2s ease; }
+  .btn-secondary:hover { border-color: var(--blue); background: rgba(76,144,240,.08); }
+  .icon-btn { background: none; border: 1px solid var(--line); border-radius: 12px; color: var(--silver); padding: 8px 12px; font-size: 17px; line-height: 1; cursor: pointer; }
+  .icon-btn:hover { border-color: var(--blue); color: var(--blue-hi); }
+
+  .admin-header {
+    position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 14px;
+    padding: 12px 20px; padding-top: max(12px, env(safe-area-inset-top));
+    background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  .admin-menu-btn { flex: 0 0 auto; }
+  .admin-header-title { flex: 1; min-width: 0; }
+  .admin-header-title .eyebrow { font-size: 11px; letter-spacing: .14em; font-weight: 600; color: var(--blue); }
+  .admin-header-title h1 { font-size: 20px; margin: 0; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .admin-header-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+  .admin-drawer {
+    position: fixed; inset: 0 auto 0 0; width: min(300px, 86vw); z-index: 40;
+    background: var(--panel); border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; padding: 16px 12px;
+    padding-top: max(16px, env(safe-area-inset-top)); overflow-y: auto;
+    box-shadow: 24px 0 60px rgba(0,0,0,.45);
+  }
+  .admin-drawer-brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 16px; }
+  .admin-nav { display: flex; flex-direction: column; gap: 2px; }
+  .admin-nav-section { font-size: 11px; letter-spacing: .14em; color: var(--muted); padding: 14px 10px 6px; }
+  .customer-nav-section { border-top: 1px solid var(--line); margin-top: 10px; }
+  .admin-nav-item {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+    background: none; border: 0; border-radius: 10px; color: var(--silver);
+    padding: 10px; font-size: 15px; cursor: pointer; transition: background .15s ease, color .15s ease;
+  }
+  .admin-nav-item:hover { background: var(--panel-2); color: var(--text); }
+  .admin-nav-item.active { background: var(--blue-dim); color: var(--blue-hi); }
+  .admin-nav-icon { width: 20px; text-align: center; color: var(--muted); }
+  .admin-nav-item.active .admin-nav-icon { color: var(--blue-hi); }
+  .customer-current { color: var(--blue-hi); }
+
+  .admin-content { max-width: 1080px; margin: 0 auto; padding: 24px 20px; }
+  .admin-page-intro { margin: 0 0 20px; }
+
+  .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 18px 0; }
+  .admin-stat-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px; text-align: left; color: inherit; cursor: pointer;
+    transition: border-color .2s ease;
+  }
+  .admin-stat-card:hover { border-color: var(--blue); }
+  .admin-stat-label { font-size: 13px; color: var(--muted); }
+  .admin-stat-value { font-size: 28px; font-weight: 600; letter-spacing: -.02em; margin-top: 4px; }
+  .admin-stat-detail { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .admin-section { margin-top: 28px; }
+  .admin-section-head h2 { margin-bottom: 2px; }
+  .admin-quick-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+  .admin-action-card {
+    flex: 1 1 220px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px; color: inherit; text-align: left; cursor: pointer;
+    transition: border-color .2s ease;
+  }
+  .admin-action-card:hover { border-color: var(--blue); }
+
+  .admin-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0; }
+  .admin-toolbar input, .admin-toolbar select { width: auto; flex: 1 1 180px; max-width: 320px; }
+
+  .admin-customer-list, .admin-venture-list, .admin-task-list, .admin-doc-list, .admin-message-list { border-top: 1px solid var(--line); margin-top: 16px; }
+  .admin-customer-row, .admin-venture-row, .admin-task-row, .admin-doc-row, .admin-message-row {
+    display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap;
+  }
+  .admin-customer-main, .admin-venture-main, .admin-task-main, .admin-doc-main, .admin-message-main { flex: 1; min-width: 200px; overflow-wrap: anywhere; }
+  .admin-venture-meta, .admin-task-meta, .admin-doc-meta { font-size: 13px; color: var(--muted); }
+  .admin-customer-arrow { color: var(--muted); background: none; border: 0; cursor: pointer; font-size: 18px; padding: 4px 8px; }
+  .admin-customer-arrow:hover { color: var(--blue-hi); }
+  .admin-avatar {
+    width: 40px; height: 40px; flex: 0 0 auto; border-radius: 999px;
+    background: var(--blue-dim); color: var(--blue-hi); font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 14px;
+  }
+  .admin-doc-icon { color: var(--muted); }
+
+  .admin-empty { text-align: center; padding: 48px 20px; color: var(--muted); }
+  .admin-empty-icon { font-size: 30px; color: var(--blue); margin-bottom: 10px; }
+  .admin-empty-text { margin-bottom: 16px; }
+
+  .customer-workspace { max-width: 1080px; margin: 0 auto; padding: 0 20px 40px; }
+  .customer-workspace-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+    padding: 18px 0; border-bottom: 1px solid var(--line); margin-bottom: 18px;
+  }
+  .customer-workspace-identity { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 640px) {
+    .pad, main#content, .admin-content { padding: 16px 14px; }
+    header.top, .admin-header { padding-left: 14px; padding-right: 14px; }
+    .admin-header { flex-wrap: wrap; row-gap: 8px; }
+    .admin-header-title h1 { font-size: 17px; }
+    .admin-header-actions { flex: 1 1 100%; justify-content: flex-start; }
+    .admin-header-actions .btn-secondary { flex: 1; padding: 9px 12px; font-size: 14px; }
+    .admin-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .admin-stat-value { font-size: 22px; }
+    .top-right { flex: 1 1 100%; justify-content: flex-end; }
+    .top-right select { max-width: 150px; }
+    .addrow > * { flex: 1 1 100%; }
+    .addrow .btn { flex: 1 1 100%; }
+    .chatbar { padding: 10px 14px; }
+    .msgs { padding: 14px; }
+    .msg { max-width: 100%; }
+    .composer { padding: 10px 14px; }
+    .banner { padding: 10px 14px; font-size: 14px; }
+    .customer-workspace-header { padding: 14px 0; }
+    .item { flex-wrap: wrap; }
   }
