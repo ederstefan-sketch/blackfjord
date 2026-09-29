@@ -8,3 +8,8 @@
 # und das ?v=-Cache-Busting im HTML sorgt zusätzlich für sofortige Updates.
 /venture-lab/*
   Cache-Control: public, max-age=300, must-revalidate
+
+# Die HTML-Seite selbst nie cachen: Sie entscheidet, welche JS/CSS-Versionen
+# geladen werden – ein alter Stand hier lässt das Portal nach dem Login hängen.
+/venture-lab.html
+  Cache-Control: no-cache, must-revalidate
