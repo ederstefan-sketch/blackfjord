@@ -39,7 +39,7 @@
     state.venture = state.ventures.find((v) => v.id === id) || null;
     state.threadId = undefined; state.membership = null;
     if (state.venture) {
-      const { data } = await sb.from('memberships').select('*').eq('venture_id', state.venture.id).maybeSingle();
+      const { data } = await sb.from('portal_memberships').select('*').eq('venture_id', state.venture.id).maybeSingle();
       state.membership = data;
     }
     renderPortal();
