@@ -35,6 +35,7 @@
     state.selectedCustomerId = id || null;
     await loadCustomerContext();
   }
+
   async function selectVenture(id) {
     state.venture = state.ventures.find((v) => v.id === id) || null;
     state.threadId = undefined; state.membership = null;
@@ -44,14 +45,14 @@
     }
     renderPortal();
   }
+
   async function newVenture() {
     const title = await askText('Neues Venture', 'Wie heißt das Venture?');
     if (!title) return;
-    const payload = { title: title.trim() };
-    // Kunden dürfen owner_id nicht selbst setzen; di
-e DB setzt auth.uid() als Default.
+    const payload = { title: title };
+    // Kunden duerfen owner_id nicht selbst setzen; die DB setzt auth.uid() als Default.
     if (isAdmin()) {
-      if (!state.selectedCustomerId) return fail(new Error('Bitte zuerst einen Kunden auswählen.'));
+      if (!state.selectedCustomerId) return fail(new Error('Bitte zuerst einen Kunden auswaehlen.'));
       payload.owner_id = state.selectedCustomerId;
     }
     const { data, error } = await sb.from('ventures').insert(payload).select().single();
