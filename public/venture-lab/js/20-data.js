@@ -45,10 +45,11 @@
     renderPortal();
   }
   async function newVenture() {
-    const title = prompt('Wie heißt das Venture?');
-    if (!title || !title.trim()) return;
+    const title = await askText('Neues Venture', 'Wie heißt das Venture?');
+    if (!title) return;
     const payload = { title: title.trim() };
-    // Kunden dürfen owner_id nicht selbst setzen; die DB setzt auth.uid() als Default.
+    // Kunden dürfen owner_id nicht selbst setzen; di
+e DB setzt auth.uid() als Default.
     if (isAdmin()) {
       if (!state.selectedCustomerId) return fail(new Error('Bitte zuerst einen Kunden auswählen.'));
       payload.owner_id = state.selectedCustomerId;

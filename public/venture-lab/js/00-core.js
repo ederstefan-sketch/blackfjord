@@ -25,8 +25,40 @@
   }
   const fmt = (d) => new Date(d).toLocaleDateString('de-AT');
   const fmtT = (d) => new Date(d).toLocaleString('de-AT', { dateStyle: 'short', timeStyle: 'short' });
-  const fail = (e) => alert(e?.message || 'Etwas ist schiefgelaufen.');
   const isAdmin = () => state.profile?.role === 'admin';
+
+// ---------- Toast statt alert ----------
+  let toastTimer = null;
+  function toast(text, kind) {
+    let el = document.querySelector('.toast');
+    if (!el) { el = h('div', { class: 'toast', role: 'status' }); document.body.append(el); }
+    el.className = 'toast' + (kind === 'err' ? ' err' : '');
+    el.textContent = text;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.remove(), 4200);
+  }
+  const fail = (e) => toast(e?.message || 'Etwas ist schiefgelaufen.', 'err');
+
+// ---------- Dialog statt prompt ----------
+  function askText(title, placeholder) {
+    return new Promise((resolve) => {
+      const input = h('input', { type: 'text', maxlength: 120, placeholder: placeholder || '', 'aria-label': title });
+      const close = (val) => { box.remove(); resolve(val); };
+      const box = h('div', { class: 'modal-backdrop', role: 'presentation', onclick: (e) => { if (e.target === box) close(null); } },
+        h('div', { class: 'modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': title },
+          h('h3', {}, title),
+          input,
+          h('div', { class: 'modal-actions' },
+            h('button', { class: 'btn ghost', type: 'button', onclick: () => close(null) }, 'Abbrechen'),
+            h('button', { class: 'btn', type: 'button', onclick: () => close(input.value.trim() || null) }, 'OK'))));
+      document.body.append(box);
+      input.focus();
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') close(input.value.trim() || null);
+        if (e.key === 'Escape') close(null);
+      });
+    });
+  }
 
   function wordmark() { return h('span', { class: 'word' }, 'black', h('b', {}, 'fjord')); }
 

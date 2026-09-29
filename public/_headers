@@ -3,3 +3,8 @@
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Venture Lab: kurz cachen – Deploy ist nach max. 5 Minuten überall sichtbar,
+# und das ?v=-Cache-Busting im HTML sorgt zusätzlich für sofortige Updates.
+/venture-lab/*
+  Cache-Control: public, max-age=300, must-revalidate
