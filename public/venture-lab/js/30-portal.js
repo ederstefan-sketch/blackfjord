@@ -1681,6 +1681,23 @@ async function renderAdminVentureDetail() {
             }
           },
           'Kunde öffnen'
+        ),
+
+        h(
+          'button',
+          {
+            class:
+              'btn btn-danger',
+
+            type:
+              'button',
+
+            onclick: () =>
+              deleteAdminVenture(
+                venture
+              )
+          },
+          'Venture löschen'
         )
       ),
 
@@ -1786,6 +1803,176 @@ async function renderAdminVentureDetail() {
 }
 
 
+// ---------- Admin Deletes ----------
+
+async function deleteAdminVenture(venture) {
+  if (!isAdmin() || !venture?.id) {
+    return;
+  }
+
+  if (
+    !confirm(
+      'Venture „' +
+        (venture.title || 'Ohne Titel') +
+        '“ wirklich löschen? Alle zugehörigen Venture-Daten werden ebenfalls gelöscht.'
+    )
+  ) {
+    return;
+  }
+
+  const {
+    data: docs,
+    error: docsError
+  } = await sb
+    .from('documents')
+    .select('storage_path')
+    .eq('venture_id', venture.id);
+
+  if (docsError) {
+    return fail(docsError);
+  }
+
+  const paths = (docs || [])
+    .map(d => d.storage_path)
+    .filter(Boolean);
+
+  if (paths.length) {
+    const {
+      error: storageError
+    } = await sb.storage
+      .from('venture-docs')
+      .remove(paths);
+
+    if (storageError) {
+      return fail(storageError);
+    }
+  }
+
+  const {
+    error
+  } = await sb
+    .from('ventures')
+    .delete()
+    .eq('id', venture.id);
+
+  if (error) {
+    return fail(error);
+  }
+
+  state.venture = null;
+  state.membership = null;
+  state.selectedCustomerId = null;
+  state.ventures = [];
+
+  adminPage = 'ventures';
+
+  renderAdminPage();
+}
+
+
+async function deleteAdminTask(task) {
+  if (!isAdmin() || !task?.id) {
+    return;
+  }
+
+  if (
+    !confirm(
+      'Aufgabe „' +
+        (task.title || 'Aufgabe') +
+        '“ löschen?'
+    )
+  ) {
+    return;
+  }
+
+  const {
+    error
+  } = await sb
+    .from('tasks')
+    .delete()
+    .eq('id', task.id);
+
+  if (error) {
+    return fail(error);
+  }
+
+  renderAdminPage();
+}
+
+
+async function deleteAdminDocument(doc) {
+  if (!isAdmin() || !doc?.id) {
+    return;
+  }
+
+  if (
+    !confirm(
+      'Dokument „' +
+        (doc.name || 'Dokument') +
+        '“ löschen?'
+    )
+  ) {
+    return;
+  }
+
+  if (doc.storage_path) {
+    const {
+      error: storageError
+    } = await sb.storage
+      .from('venture-docs')
+      .remove([doc.storage_path]);
+
+    if (storageError) {
+      return fail(storageError);
+    }
+  }
+
+  const {
+    error
+  } = await sb
+    .from('documents')
+    .delete()
+    .eq('id', doc.id);
+
+  if (error) {
+    return fail(error);
+  }
+
+  renderAdminPage();
+}
+
+
+async function deleteAdminMessage(message) {
+  if (!isAdmin() || !message?.id) {
+    return;
+  }
+
+  if (
+    !confirm(
+      'Diese Nachricht wirklich löschen?'
+    )
+  ) {
+    return;
+  }
+
+  const {
+    error
+  } = await sb
+    .from('comm_messages')
+    .delete()
+    .eq('id', message.id);
+
+  if (error) {
+    return fail(error);
+  }
+
+  state.adminMessage = null;
+  adminPage = 'messages';
+
+  renderAdminPage();
+}
+
+
 // ---------- Tasks ----------
 
 async function renderAdminTasks() {
@@ -1886,6 +2073,26 @@ async function renderAdminTasks() {
                   class:
                     'admin-task-row'
                 },
+
+                h(
+                  'button',
+                  {
+                    class:
+                      'btn btn-danger sm',
+
+                    type:
+                      'button',
+
+                    title:
+                      'Aufgabe löschen',
+
+                    onclick: () =>
+                      deleteAdminTask(
+                        task
+                      )
+                  },
+                  '×'
+                ),
 
                 h(
                   'div',
@@ -2011,7 +2218,7 @@ async function renderAdminDocs() {
       await sb
         .from('documents')
         .select(
-          'id,venture_id,name,document_type,generated,processing_status,visibility,created_at'
+          'id,venture_id,name,storage_path,document_type,generated,processing_status,visibility,created_at'
         )
         .in(
           'venture_id',
@@ -2137,7 +2344,60 @@ async function renderAdminDocs() {
                         },
                         doc.processing_status
                       )
-                    : null
+                    : null,
+
+                  doc.storage_path
+                    ? h(
+                        'button',
+                        {
+                          class:
+                            'btn btn-secondary sm',
+
+                          type:
+                            'button',
+
+                          onclick: async () => {
+                            const {
+                              data: signed,
+                              error
+                            } = await sb.storage
+                              .from('venture-docs')
+                              .createSignedUrl(
+                                doc.storage_path,
+                                60
+                              );
+
+                            if (error) {
+                              return fail(error);
+                            }
+
+                            window.open(
+                              signed.signedUrl,
+                              '_blank',
+                              'noopener'
+                            );
+                          }
+                        },
+                        'Öffnen'
+                      )
+                    : null,
+
+                  h(
+                    'button',
+                    {
+                      class:
+                        'btn btn-danger sm',
+
+                      type:
+                        'button',
+
+                      onclick: () =>
+                        deleteAdminDocument(
+                          doc
+                        )
+                    },
+                    'Löschen'
+                  )
                 )
               );
             }
@@ -2404,6 +2664,23 @@ async function renderAdminMessageDetail() {
             }
           },
           '← Nachrichten'
+        ),
+
+        h(
+          'button',
+          {
+            class:
+              'btn btn-danger',
+
+            type:
+              'button',
+
+            onclick: () =>
+              deleteAdminMessage(
+                message
+              )
+          },
+          'Nachricht löschen'
         )
       ),
 
