@@ -1,4 +1,3 @@
-
 // ---------- KI-Chat ----------
   async function callChat(payload) {
     const { data, error } = await sb.functions.invoke('venture-ai-orchestrator', { body: payload });
@@ -158,55 +157,32 @@
           throw new Error(error.message);
         }
 
-        status.textContent = '📎 ' + f.name + ' · Text wird gelesen …';
-
-        const ingest = await sb.functions.invoke(
-          'venture-document-ingest',
-          {
-            body: {
-              document_id: newDoc.id
-            }
-          }
-        );
-
-        if (ingest.error) {
-          console.log(
-            'Textauslese fehlgeschlagen',
-            ingest.error
-          );
-          throw new Error(
-            'Das Dokument konnte nicht verarbeitet werden.'
-          );
-        }
-
         status.textContent =
-          '📎 ' + f.name + ' · wird für Venture AI vorbereitet …';
+          '📎 ' + f.name + ' · Document Reader prüft die Datei …';
 
-        const sync = await sb.functions.invoke(
-          'venture-ai-file-sync',
+        const agent = await sb.functions.invoke(
+          'venture-document-agent',
           {
             body: {
-              venture_id: v.id,
               document_id: newDoc.id
             }
           }
         );
 
-        if (sync.error) {
-          console.log(
-            'KI-Index fehlgeschlagen',
-            sync.error
-          );
-          throw new Error(
-            'Das Dokument wurde hochgeladen, konnte aber noch nicht für die KI indexiert werden.'
-          );
+        if (agent.error || !agent.data?.ok) {
+          const detail =
+            agent.data?.error ||
+            agent.error?.message ||
+            'Das Dokument konnte nicht verarbeitet werden.';
+
+          throw new Error(detail);
         }
 
         status.className = 'msg assistant';
         status.textContent =
           '📎 ' +
           f.name +
-          ' · hochgeladen und für Venture AI durchsuchbar.';
+          ' · gelesen, geprüft und für Venture AI durchsuchbar.';
 
       } catch (e) {
         status.className = 'msg assistant err';
