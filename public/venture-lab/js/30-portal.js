@@ -1,77 +1,140 @@
+
 // ---------- Portal-Rahmen & Admin Center ----------
+
 function daysLeft(m) {
   return Math.ceil(
-    (new Date(m.trial_ends_at) - Date.now()) / 86400000
+    (
+      new Date(
+        m.trial_ends_at
+      ) -
+      Date.now()
+    ) /
+      86400000
   );
 }
 
+
 function status() {
-  const m = state.membership;
+  const m =
+    state.membership;
 
   if (!m) {
     return isAdmin()
-      ? { text: 'Admin', cls: '' }
-      : { text: 'Kein Zugang aktiv', cls: 'bad' };
+      ? {
+          text: 'Admin',
+          cls: ''
+        }
+      : {
+          text:
+            'Kein Zugang aktiv',
+          cls: 'bad'
+        };
   }
 
   if (
-    m.plan === 'expired' ||
-    (m.plan === 'trial_full' && daysLeft(m) < 0)
+    m.plan ===
+      'expired' ||
+    (
+      m.plan ===
+        'trial_full' &&
+      daysLeft(m) < 0
+    )
   ) {
-    return { text: 'Abgelaufen', cls: 'bad' };
+    return {
+      text: 'Abgelaufen',
+      cls: 'bad'
+    };
   }
 
-  if (m.plan === 'trial_full') {
-    const d = daysLeft(m);
+  if (
+    m.plan ===
+    'trial_full'
+  ) {
+    const d =
+      daysLeft(m);
+
     return {
-      text: `Testphase · ${d} ${d === 1 ? 'Tag' : 'Tage'}`,
+      text:
+        `Testphase · ${d} ${
+          d === 1
+            ? 'Tag'
+            : 'Tage'
+        }`,
       cls: ''
     };
   }
 
   return {
-    text: m.plan || 'Aktiv',
+    text:
+      m.plan ||
+      'Aktiv',
     cls: ''
   };
 }
 
+
 // ---------- Admin State ----------
-let menuOpen = false;
-let adminPage = 'overview';
+
+let menuOpen =
+  false;
+
+let adminPage =
+  'overview';
+
 
 // ---------- Admin Shell ----------
-function adminShell(title, ...content) {
+
+function adminShell(
+  title,
+  ...content
+) {
   app.replaceChildren(
     adminHeader(title),
     adminDrawer(),
+
     h(
       'main',
       {
-        id: 'content',
-        class: 'admin-content'
+        id:
+          'content',
+
+        class:
+          'admin-content'
       },
       ...content
     )
   );
 }
 
-function adminHeader(title) {
+
+function adminHeader(
+  title
+) {
   return h(
     'header',
     {
-      class: 'admin-header'
+      class:
+        'admin-header'
     },
 
     h(
       'button',
       {
-        class: 'icon-btn admin-menu-btn',
-        type: 'button',
+        class:
+          'icon-btn admin-menu-btn',
+
+        type:
+          'button',
+
         onclick: () => {
-          menuOpen = !menuOpen;
+          menuOpen =
+            !menuOpen;
+
           renderAdminPage();
         },
-        title: 'Menü'
+
+        title:
+          'Menü'
       },
       '☰'
     ),
@@ -79,13 +142,15 @@ function adminHeader(title) {
     h(
       'div',
       {
-        class: 'admin-header-title'
+        class:
+          'admin-header-title'
       },
 
       h(
         'div',
         {
-          class: 'eyebrow'
+          class:
+            'eyebrow'
         },
         'BLACKFJORD'
       ),
@@ -100,20 +165,30 @@ function adminHeader(title) {
     h(
       'div',
       {
-        class: 'admin-header-actions'
+        class:
+          'admin-header-actions'
       },
 
       state.selectedCustomerId
         ? h(
             'button',
             {
-              class: 'btn btn-secondary',
-              type: 'button',
+              class:
+                'btn btn-secondary',
+
+              type:
+                'button',
+
               onclick: () => {
-                state.selectedCustomerId = null;
-                state.venture = null;
-                state.tab = 'chat';
-                adminPage = 'customers';
+                state.selectedCustomerId =
+                  null;
+
+                state.venture =
+                  null;
+
+                adminPage =
+                  'customers';
+
                 renderAdminPage();
               }
             },
@@ -124,9 +199,14 @@ function adminHeader(title) {
       h(
         'button',
         {
-          class: 'btn btn-secondary',
-          type: 'button',
-          onclick: logout
+          class:
+            'btn btn-secondary',
+
+          type:
+            'button',
+
+          onclick:
+            logout
         },
         'Abmelden'
       )
@@ -134,28 +214,56 @@ function adminHeader(title) {
   );
 }
 
-// ---------- Admin Drawer ----------
-function adminDrawer() {
-  if (!menuOpen) return null;
 
-  const item = (key, label, icon) =>
+// ---------- Admin Drawer ----------
+
+function adminDrawer() {
+  if (!menuOpen) {
+    return null;
+  }
+
+  const item = (
+    key,
+    label,
+    icon
+  ) =>
     h(
       'button',
       {
         class:
           'admin-nav-item' +
-          (adminPage === key ? ' active' : ''),
-        type: 'button',
+          (
+            adminPage ===
+            key
+              ? ' active'
+              : ''
+          ),
+
+        type:
+          'button',
+
         onclick: () => {
-          menuOpen = false;
-          adminPage = key;
+          menuOpen =
+            false;
+
+          adminPage =
+            key;
 
           if (
-            key !== 'customers' &&
-            key !== 'overview'
+            key !==
+              'customers' &&
+            key !==
+              'customer-detail' &&
+            key !==
+              'venture-detail' &&
+            key !==
+              'message-detail'
           ) {
-            state.selectedCustomerId = null;
-            state.venture = null;
+            state.selectedCustomerId =
+              null;
+
+            state.venture =
+              null;
           }
 
           renderAdminPage();
@@ -165,7 +273,8 @@ function adminDrawer() {
       h(
         'span',
         {
-          class: 'admin-nav-icon'
+          class:
+            'admin-nav-icon'
         },
         icon
       ),
@@ -180,13 +289,15 @@ function adminDrawer() {
   return h(
     'aside',
     {
-      class: 'admin-drawer'
+      class:
+        'admin-drawer'
     },
 
     h(
       'div',
       {
-        class: 'admin-drawer-brand'
+        class:
+          'admin-drawer-brand'
       },
 
       logo(),
@@ -196,104 +307,138 @@ function adminDrawer() {
     h(
       'div',
       {
-        class: 'admin-nav'
+        class:
+          'admin-nav'
       },
 
       h(
         'div',
         {
-          class: 'admin-nav-section'
+          class:
+            'admin-nav-section'
         },
         'ADMIN'
       ),
 
-      item('overview', 'Übersicht', '⌂'),
-      item('customers', 'Kunden', '♙'),
-      item('ventures', 'Ventures', '◆'),
-      item('tasks', 'Aufgaben', '✓'),
-      item('docs', 'Dokumente', '▤'),
-      item('messages', 'Nachrichten', '✉'),
-      item('activity', 'Aktivitäten', '◌'),
-      item('settings', 'Einstellungen', '⚙'),
+      item(
+        'overview',
+        'Übersicht',
+        '⌂'
+      ),
 
-      h(
-        'div',
-        {
-          class:
-            'admin-nav-section customer-nav-section'
-        },
-        'KUNDE'
+      item(
+        'customers',
+        'Kunden',
+        '♙'
+      ),
+
+      item(
+        'ventures',
+        'Ventures',
+        '◆'
+      ),
+
+      item(
+        'tasks',
+        'Aufgaben',
+        '✓'
+      ),
+
+      item(
+        'docs',
+        'Dokumente',
+        '▤'
+      ),
+
+      item(
+        'messages',
+        'Nachrichten',
+        '✉'
+      ),
+
+      item(
+        'activity',
+        'Aktivitäten',
+        '◌'
+      ),
+
+      item(
+        'settings',
+        'Einstellungen',
+        '⚙'
       ),
 
       state.selectedCustomerId
         ? h(
-            'button',
+            'div',
             {
               class:
-                'admin-nav-item customer-current',
-              type: 'button',
-              onclick: () => {
-                menuOpen = false;
-                openCustomerWorkspace(
-                  state.selectedCustomerId
-                );
-              }
+                'admin-nav-section customer-nav-section'
             },
 
-            h(
-              'span',
-              {
-                class: 'admin-nav-icon'
-              },
-              '→'
-            ),
+            'KUNDE',
 
             h(
-              'span',
-              {},
-              customerName(
-                state.selectedCustomerId
+              'button',
+              {
+                class:
+                  'admin-nav-item customer-current',
+
+                type:
+                  'button',
+
+                onclick: () => {
+                  menuOpen =
+                    false;
+
+                  adminPage =
+                    'customer-detail';
+
+                  renderAdminPage();
+                }
+              },
+
+              h(
+                'span',
+                {
+                  class:
+                    'admin-nav-icon'
+                },
+                '→'
+              ),
+
+              h(
+                'span',
+                {},
+                customerName(
+                  state.selectedCustomerId
+                )
               )
             )
           )
-        : h(
-            'button',
-            {
-              class: 'admin-nav-item',
-              type: 'button',
-              onclick: () => {
-                menuOpen = false;
-                adminPage = 'customers';
-                renderAdminPage();
-              }
-            },
-
-            h(
-              'span',
-              {
-                class: 'admin-nav-icon'
-              },
-              '→'
-            ),
-
-            h(
-              'span',
-              {},
-              'Kunde auswählen'
-            )
-          )
+        : null
     )
   );
 }
 
+
 // ---------- Helpers ----------
-function customerName(id) {
+
+function customerName(
+  id
+) {
   const customer =
-    (state.customers || []).find(
-      c => c.id === id
+    (
+      state.customers ||
+      []
+    ).find(
+      c =>
+        c.id === id
     );
 
-  if (!customer) return 'Kunde';
+  if (!customer) {
+    return 'Kunde';
+  }
 
   return (
     customer.full_name ||
@@ -302,27 +447,48 @@ function customerName(id) {
   );
 }
 
-function customerCompany(id) {
+
+function customerCompany(
+  id
+) {
   const customer =
-    (state.customers || []).find(
-      c => c.id === id
+    (
+      state.customers ||
+      []
+    ).find(
+      c =>
+        c.id === id
     );
 
-  return customer?.company || '';
+  return (
+    customer?.company ||
+    ''
+  );
 }
 
-function initials(value) {
-  const text = String(value || '').trim();
 
-  if (!text) return '?';
+function initials(
+  value
+) {
+  const text =
+    String(
+      value || ''
+    ).trim();
+
+  if (!text) {
+    return '?';
+  }
 
   return text
     .split(/\s+/)
     .slice(0, 2)
-    .map(x => x[0])
+    .map(
+      x => x[0]
+    )
     .join('')
     .toUpperCase();
 }
+
 
 function statCard(
   label,
@@ -333,15 +499,20 @@ function statCard(
   return h(
     'button',
     {
-      class: 'admin-stat-card',
-      type: 'button',
+      class:
+        'admin-stat-card',
+
+      type:
+        'button',
+
       onclick
     },
 
     h(
       'div',
       {
-        class: 'admin-stat-label'
+        class:
+          'admin-stat-label'
       },
       label
     ),
@@ -349,7 +520,8 @@ function statCard(
     h(
       'div',
       {
-        class: 'admin-stat-value'
+        class:
+          'admin-stat-value'
       },
       String(value)
     ),
@@ -358,13 +530,15 @@ function statCard(
       ? h(
           'div',
           {
-            class: 'admin-stat-detail'
+            class:
+              'admin-stat-detail'
           },
           detail
         )
       : null
   );
 }
+
 
 function adminSection(
   title,
@@ -374,13 +548,15 @@ function adminSection(
   return h(
     'section',
     {
-      class: 'admin-section'
+      class:
+        'admin-section'
     },
 
     h(
       'div',
       {
-        class: 'admin-section-head'
+        class:
+          'admin-section-head'
       },
 
       h(
@@ -397,7 +573,8 @@ function adminSection(
           ? h(
               'p',
               {
-                class: 'muted'
+                class:
+                  'muted'
               },
               subtitle
             )
@@ -409,6 +586,7 @@ function adminSection(
   );
 }
 
+
 function adminEmpty(
   text,
   actionLabel,
@@ -417,13 +595,15 @@ function adminEmpty(
   return h(
     'div',
     {
-      class: 'admin-empty'
+      class:
+        'admin-empty'
     },
 
     h(
       'div',
       {
-        class: 'admin-empty-icon'
+        class:
+          'admin-empty-icon'
       },
       '○'
     ),
@@ -431,7 +611,8 @@ function adminEmpty(
     h(
       'div',
       {
-        class: 'admin-empty-text'
+        class:
+          'admin-empty-text'
       },
       text
     ),
@@ -440,9 +621,14 @@ function adminEmpty(
       ? h(
           'button',
           {
-            class: 'btn btn-primary',
-            type: 'button',
-            onclick: action
+            class:
+              'btn btn-primary',
+
+            type:
+              'button',
+
+            onclick:
+              action
           },
           actionLabel
         )
@@ -450,18 +636,28 @@ function adminEmpty(
   );
 }
 
+
 // ---------- Admin Router ----------
+
 function renderAdminPage() {
   if (!isAdmin()) {
-    return renderPortal();
+    return;
   }
 
-  switch (adminPage) {
+  switch (
+    adminPage
+  ) {
     case 'customers':
       return renderAdminCustomers();
 
+    case 'customer-detail':
+      return renderAdminCustomerDetail();
+
     case 'ventures':
       return renderAdminVentures();
+
+    case 'venture-detail':
+      return renderAdminVentureDetail();
 
     case 'tasks':
       return renderAdminTasks();
@@ -471,6 +667,9 @@ function renderAdminPage() {
 
     case 'messages':
       return renderAdminMessages();
+
+    case 'message-detail':
+      return renderAdminMessageDetail();
 
     case 'activity':
       return renderAdminActivity();
@@ -484,19 +683,26 @@ function renderAdminPage() {
   }
 }
 
+
 // ---------- Overview ----------
+
 async function adminCounts() {
   const customers =
-    state.customers?.length || 0;
+    state.customers?.length ||
+    0;
 
   const {
     data: ventures
-  } = await sb
-    .from('ventures')
-    .select('id');
+  } =
+    await sb
+      .from('ventures')
+      .select('id');
 
   const ventureIds =
-    (ventures || []).map(
+    (
+      ventures ||
+      []
+    ).map(
       v => v.id
     );
 
@@ -504,210 +710,270 @@ async function adminCounts() {
   let docs = [];
   let messages = [];
 
-  if (ventureIds.length) {
+  if (
+    ventureIds.length
+  ) {
     const [
       tasksResult,
       docsResult,
       messagesResult
-    ] = await Promise.all([
-      sb
-        .from('tasks')
-        .select('id,status')
-        .in(
-          'venture_id',
-          ventureIds
-        ),
+    ] =
+      await Promise.all([
+        sb
+          .from('tasks')
+          .select(
+            'id,status'
+          )
+          .in(
+            'venture_id',
+            ventureIds
+          ),
 
-      sb
-        .from('documents')
-        .select('id')
-        .in(
-          'venture_id',
-          ventureIds
-        ),
+        sb
+          .from('documents')
+          .select(
+            'id'
+          )
+          .in(
+            'venture_id',
+            ventureIds
+          ),
 
-      sb
-        .from('comm_messages')
-        .select('id')
-        .in(
-          'venture_id',
-          ventureIds
-        )
-    ]);
+        sb
+          .from(
+            'comm_messages'
+          )
+          .select(
+            'id'
+          )
+          .in(
+            'venture_id',
+            ventureIds
+          )
+      ]);
 
     tasks =
-      tasksResult.data || [];
+      tasksResult.data ||
+      [];
 
     docs =
-      docsResult.data || [];
+      docsResult.data ||
+      [];
 
     messages =
-      messagesResult.data || [];
+      messagesResult.data ||
+      [];
   }
 
   const openTasks =
-    tasks.filter(task => {
-      const value =
-        String(
-          task.status || ''
-        ).toLowerCase();
+    tasks.filter(
+      task => {
+        const value =
+          String(
+            task.status ||
+              ''
+          ).toLowerCase();
 
-      return ![
-        'done',
-        'completed',
-        'closed'
-      ].includes(value);
-    }).length;
+        return ![
+          'done',
+          'completed',
+          'closed'
+        ].includes(
+          value
+        );
+      }
+    ).length;
 
   return {
     customers,
+
     ventures:
-      ventures?.length || 0,
-    tasks: openTasks,
-    docs: docs.length,
-    messages: messages.length
+      ventures?.length ||
+      0,
+
+    tasks:
+      openTasks,
+
+    docs:
+      docs.length,
+
+    messages:
+      messages.length
   };
 }
+
 
 async function renderAdminOverview() {
   const counts =
     await adminCounts();
 
-  const stats = h(
-    'div',
-    {
-      class: 'admin-stats'
-    },
-
-    statCard(
-      'Kunden',
-      counts.customers,
-      'Kundenkonten',
-      () => {
-        adminPage = 'customers';
-        renderAdminPage();
-      }
-    ),
-
-    statCard(
-      'Ventures',
-      counts.ventures,
-      'aktive / vorhandene Ventures',
-      () => {
-        adminPage = 'ventures';
-        renderAdminPage();
-      }
-    ),
-
-    statCard(
-      'Offene Aufgaben',
-      counts.tasks,
-      'noch nicht erledigt',
-      () => {
-        adminPage = 'tasks';
-        renderAdminPage();
-      }
-    ),
-
-    statCard(
-      'Dokumente',
-      counts.docs,
-      'im Workspace',
-      () => {
-        adminPage = 'docs';
-        renderAdminPage();
-      }
-    ),
-
-    statCard(
-      'Nachrichten',
-      counts.messages,
-      'Kommunikation',
-      () => {
-        adminPage = 'messages';
-        renderAdminPage();
-      }
-    )
-  );
-
-  const quickActions = h(
-    'div',
-    {
-      class: 'admin-quick-actions'
-    },
-
+  const stats =
     h(
-      'button',
+      'div',
       {
-        class: 'admin-action-card',
-        type: 'button',
-        onclick: () => {
-          adminPage = 'customers';
+        class:
+          'admin-stats'
+      },
+
+      statCard(
+        'Kunden',
+        counts.customers,
+        'Kundenkonten',
+        () => {
+          adminPage =
+            'customers';
+
           renderAdminPage();
         }
+      ),
+
+      statCard(
+        'Ventures',
+        counts.ventures,
+        'aktive / vorhandene Ventures',
+        () => {
+          adminPage =
+            'ventures';
+
+          renderAdminPage();
+        }
+      ),
+
+      statCard(
+        'Offene Aufgaben',
+        counts.tasks,
+        'noch nicht erledigt',
+        () => {
+          adminPage =
+            'tasks';
+
+          renderAdminPage();
+        }
+      ),
+
+      statCard(
+        'Dokumente',
+        counts.docs,
+        'im Workspace',
+        () => {
+          adminPage =
+            'docs';
+
+          renderAdminPage();
+        }
+      ),
+
+      statCard(
+        'Nachrichten',
+        counts.messages,
+        'Kommunikation',
+        () => {
+          adminPage =
+            'messages';
+
+          renderAdminPage();
+        }
+      )
+    );
+
+  const quickActions =
+    h(
+      'div',
+      {
+        class:
+          'admin-quick-actions'
       },
 
       h(
-        'strong',
-        {},
-        'Kunden öffnen'
+        'button',
+        {
+          class:
+            'admin-action-card',
+
+          type:
+            'button',
+
+          onclick: () => {
+            adminPage =
+              'customers';
+
+            renderAdminPage();
+          }
+        },
+
+        h(
+          'strong',
+          {},
+          'Kunden öffnen'
+        ),
+
+        h(
+          'span',
+          {},
+          'Kunden und deren Ventures im Admin Center verwalten.'
+        )
       ),
 
       h(
-        'span',
-        {},
-        'Kunden auswählen und direkt in deren Workspace springen.'
-      )
-    ),
+        'button',
+        {
+          class:
+            'admin-action-card',
 
-    h(
-      'button',
-      {
-        class: 'admin-action-card',
-        type: 'button',
-        onclick: () => {
-          adminPage = 'ventures';
-          renderAdminPage();
-        }
-      },
+          type:
+            'button',
 
-      h(
-        'strong',
-        {},
-        'Ventures verwalten'
+          onclick: () => {
+            adminPage =
+              'ventures';
+
+            renderAdminPage();
+          }
+        },
+
+        h(
+          'strong',
+          {},
+          'Ventures verwalten'
+        ),
+
+        h(
+          'span',
+          {},
+          'Ventures zentral ansehen und verwalten.'
+        )
       ),
 
       h(
-        'span',
-        {},
-        'Ventures ansehen, öffnen und neue Ventures anlegen.'
+        'button',
+        {
+          class:
+            'admin-action-card',
+
+          type:
+            'button',
+
+          onclick: () => {
+            adminPage =
+              'settings';
+
+            renderAdminPage();
+          }
+        },
+
+        h(
+          'strong',
+          {},
+          'Einstellungen'
+        ),
+
+        h(
+          'span',
+          {},
+          'Admin-Einstellungen verwalten.'
+        )
       )
-    ),
-
-    h(
-      'button',
-      {
-        class: 'admin-action-card',
-        type: 'button',
-        onclick: () => {
-          adminPage = 'settings';
-          renderAdminPage();
-        }
-      },
-
-      h(
-        'strong',
-        {},
-        'Einstellungen'
-      ),
-
-      h(
-        'span',
-        {},
-        'Portal- und Benutzereinstellungen verwalten.'
-      )
-    )
-  );
+    );
 
   adminShell(
     'Übersicht',
@@ -715,7 +981,8 @@ async function renderAdminOverview() {
     h(
       'div',
       {
-        class: 'admin-page-intro'
+        class:
+          'admin-page-intro'
       },
 
       h(
@@ -725,7 +992,8 @@ async function renderAdminOverview() {
         h(
           'p',
           {
-            class: 'eyebrow'
+            class:
+              'eyebrow'
           },
           'VENTURE LAB'
         ),
@@ -739,7 +1007,8 @@ async function renderAdminOverview() {
         h(
           'p',
           {
-            class: 'muted'
+            class:
+              'muted'
           },
           'Von hier aus steuerst du Kunden, Ventures und den gesamten Workspace.'
         )
@@ -756,27 +1025,33 @@ async function renderAdminOverview() {
   );
 }
 
+
 // ---------- Customers ----------
+
 async function renderAdminCustomers() {
-  if (!state.customers?.length) {
+  if (
+    !state.customers?.length
+  ) {
     const {
       data,
       error
-    } = await sb
-      .from('profiles')
-      .select(
-        'id,full_name,company,role,first_name,last_name'
-      )
-      .eq(
-        'role',
-        'customer'
-      )
-      .order(
-        'full_name',
-        {
-          ascending: true
-        }
-      );
+    } =
+      await sb
+        .from('profiles')
+        .select(
+          'id,full_name,company,role,first_name,last_name'
+        )
+        .eq(
+          'role',
+          'customer'
+        )
+        .order(
+          'full_name',
+          {
+            ascending:
+              true
+          }
+        );
 
     if (error) {
       return fail(error);
@@ -808,11 +1083,15 @@ async function renderAdminCustomers() {
                         ? ' selected'
                         : ''
                     ),
-                  type: 'button',
-                  onclick: () =>
-                    openCustomerWorkspace(
-                      customer.id
-                    )
+
+                  type:
+                    'button',
+
+                  onclick:
+                    () =>
+                      openAdminCustomer(
+                        customer.id
+                      )
                 },
 
                 h(
@@ -873,13 +1152,14 @@ async function renderAdminCustomers() {
     'Kunden',
 
     adminSection(
-      'Kunden auswählen',
-      'Öffne einen Kunden, um dessen vollständigen Workspace zu bearbeiten.',
+      'Kunden',
+      'Kunden ausschließlich innerhalb des Admin Centers verwalten.',
 
       h(
         'div',
         {
-          class: 'admin-toolbar'
+          class:
+            'admin-toolbar'
         },
 
         h(
@@ -887,13 +1167,14 @@ async function renderAdminCustomers() {
           {
             class:
               'btn btn-secondary',
-            type: 'button',
+
+            type:
+              'button',
+
             onclick: () => {
-              state.selectedCustomerId =
-                null;
-              state.venture = null;
               adminPage =
                 'overview';
+
               renderAdminPage();
             }
           },
@@ -906,34 +1187,37 @@ async function renderAdminCustomers() {
   );
 }
 
-// ---------- Customer Workspace ----------
-async function openCustomerWorkspace(
+
+// ---------- Customer Detail ----------
+
+async function openAdminCustomer(
   customerId
 ) {
   state.selectedCustomerId =
     customerId;
 
-  state.tab =
-    'chat';
-
   state.venture =
     null;
 
-  await loadCustomerContext();
+  state.membership =
+    null;
+
+  state.ventures =
+    [];
+
+  adminPage =
+    'customer-detail';
+
+  renderAdminPage();
 }
 
-async function renderCustomerWorkspace() {
-  if (
-    !state.selectedCustomerId
-  ) {
-    adminPage =
-      'customers';
 
-    return renderAdminPage();
-  }
-
+async function renderAdminCustomerDetail() {
   const customer =
-    state.customers.find(
+    (
+      state.customers ||
+      []
+    ).find(
       c =>
         c.id ===
         state.selectedCustomerId
@@ -949,214 +1233,205 @@ async function renderCustomerWorkspace() {
     return renderAdminPage();
   }
 
-  const workspaceHeader =
-    h(
-      'div',
-      {
-        class:
-          'customer-workspace-header'
-      },
+  const {
+    data: ventures,
+    error
+  } =
+    await sb
+      .from('ventures')
+      .select(
+        'id,title,description,stage,progress,owner_id,created_at'
+      )
+      .eq(
+        'owner_id',
+        customer.id
+      )
+      .order(
+        'created_at',
+        {
+          ascending:
+            false
+        }
+      );
+
+  if (error) {
+    return fail(error);
+  }
+
+  const rows =
+    ventures?.length
+      ? h(
+          'div',
+          {
+            class:
+              'admin-venture-list'
+          },
+
+          ...ventures.map(
+            venture =>
+              h(
+                'button',
+                {
+                  class:
+                    'admin-venture-row',
+
+                  type:
+                    'button',
+
+                  onclick:
+                    () =>
+                      openAdminVenture(
+                        venture
+                      )
+                },
+
+                h(
+                  'div',
+                  {
+                    class:
+                      'admin-venture-main'
+                  },
+
+                  h(
+                    'strong',
+                    {},
+                    venture.title ||
+                    'Unbenanntes Venture'
+                  ),
+
+                  venture.stage
+                    ? h(
+                        'span',
+                        {
+                          class:
+                            'muted'
+                        },
+                        venture.stage
+                      )
+                    : null
+                ),
+
+                h(
+                  'div',
+                  {
+                    class:
+                      'admin-venture-meta'
+                  },
+
+                  typeof venture.progress ===
+                  'number'
+                    ? h(
+                        'span',
+                        {
+                          class:
+                            'muted'
+                        },
+                        venture.progress +
+                          '%'
+                      )
+                    : null
+                ),
+
+                h(
+                  'span',
+                  {
+                    class:
+                      'admin-customer-arrow'
+                  },
+                  '›'
+                )
+              )
+          )
+        )
+      : adminEmpty(
+          'Dieser Kunde hat noch kein Venture.',
+          'Neues Venture',
+          () =>
+            newVenture()
+        );
+
+  adminShell(
+    'Kunde',
+
+    adminSection(
+      customer.full_name ||
+        customer.company ||
+        'Kunde',
+
+      customer.company ||
+        '',
 
       h(
         'div',
         {
           class:
-            'customer-workspace-identity'
+            'admin-toolbar'
         },
 
         h(
-          'div',
+          'button',
           {
             class:
-              'admin-avatar large'
+              'btn btn-secondary',
+
+            type:
+              'button',
+
+            onclick: () => {
+              state.selectedCustomerId =
+                null;
+
+              adminPage =
+                'customers';
+
+              renderAdminPage();
+            }
           },
-          initials(
-            customer.full_name ||
-            customer.company
-          )
+          '← Kunden'
         ),
 
         h(
-          'div',
-          {},
+          'button',
+          {
+            class:
+              'btn btn-primary',
 
-          h(
-            'div',
-            {
-              class:
-                'eyebrow'
-            },
-            'KUNDE'
-          ),
+            type:
+              'button',
 
-          h(
-            'h1',
-            {},
-            customer.full_name ||
-            customer.company ||
-            'Kunde'
-          ),
-
-          customer.company
-            ? h(
-                'p',
-                {
-                  class:
-                    'muted'
-                },
-                customer.company
-              )
-            : null
+            onclick:
+              () =>
+                newVenture()
+          },
+          '+ Neues Venture'
         )
       ),
 
-      h(
-        'button',
-        {
-          class:
-            'btn btn-secondary',
-          type: 'button',
-          onclick: () => {
-            state.selectedCustomerId =
-              null;
-
-            state.venture =
-              null;
-
-            adminPage =
-              'customers';
-
-            renderAdminPage();
-          }
-        },
-        'Kunde wechseln'
-      )
-    );
-
-  const tabs =
-    h(
-      'nav',
-      {
-        class: 'tabs'
-      },
-
-      ...TABS.map(
-        tab => {
-          const active =
-            state.tab ===
-            tab[0];
-
-          return h(
-            'button',
-            {
-              class:
-                'tab' +
-                (
-                  active
-                    ? ' active'
-                    : ''
-                ),
-              type: 'button',
-              onclick: () => {
-                state.tab =
-                  tab[0];
-
-                renderCustomerWorkspace();
-              }
-            },
-            tab[1]
-          );
-        }
-      )
-    );
-
-  let body;
-
-  switch (
-    state.tab
-  ) {
-    case 'memory':
-      body =
-        typeof renderMemory ===
-        'function'
-          ? renderMemory()
-          : null;
-      break;
-
-    case 'tasks':
-      body =
-        typeof renderTasks ===
-        'function'
-          ? renderTasks()
-          : null;
-      break;
-
-    case 'docs':
-      body =
-        typeof renderDocs ===
-        'function'
-          ? renderDocs()
-          : null;
-      break;
-
-    case 'msgs':
-      body =
-        typeof renderMsgs ===
-        'function'
-          ? renderMsgs()
-          : null;
-      break;
-
-    case 'chat':
-    default:
-      body =
-        typeof renderChat ===
-        'function'
-          ? renderChat()
-          : null;
-      break;
-  }
-
-  app.replaceChildren(
-    adminHeader(
-      customer.full_name ||
-      customer.company ||
-      'Kunde'
-    ),
-
-    adminDrawer(),
-
-    h(
-      'main',
-      {
-        id: 'content',
-        class:
-          'customer-workspace'
-      },
-
-      workspaceHeader,
-      tabs,
-      body
+      rows
     )
   );
 }
 
+
 // ---------- Ventures ----------
+
 async function renderAdminVentures() {
   const {
     data,
     error
-  } = await sb
-    .from('ventures')
-    .select(
-      'id,title,description,stage,progress,owner_id,created_at'
-    )
-    .order(
-      'created_at',
-      {
-        ascending: false
-      }
-    );
+  } =
+    await sb
+      .from('ventures')
+      .select(
+        'id,title,description,stage,progress,owner_id,created_at'
+      )
+      .order(
+        'created_at',
+        {
+          ascending:
+            false
+        }
+      );
 
   if (error) {
     return fail(error);
@@ -1188,11 +1463,15 @@ async function renderAdminVentures() {
                 {
                   class:
                     'admin-venture-row',
-                  type: 'button',
-                  onclick: () =>
-                    openAdminVenture(
-                      venture
-                    )
+
+                  type:
+                    'button',
+
+                  onclick:
+                    () =>
+                      openAdminVenture(
+                        venture
+                      )
                 },
 
                 h(
@@ -1247,7 +1526,8 @@ async function renderAdminVentures() {
                           class:
                             'muted'
                         },
-                        `${venture.progress}%`
+                        venture.progress +
+                          '%'
                       )
                     : null
                 ),
@@ -1265,9 +1545,7 @@ async function renderAdminVentures() {
           )
         )
       : adminEmpty(
-          'Noch keine Ventures vorhanden.',
-          'Neues Venture',
-          () => newVenture()
+          'Noch keine Ventures vorhanden.'
         );
 
   adminShell(
@@ -1289,9 +1567,13 @@ async function renderAdminVentures() {
           {
             class:
               'btn btn-primary',
-            type: 'button',
-            onclick: () =>
-              newVenture()
+
+            type:
+              'button',
+
+            onclick:
+              () =>
+                newVenture()
           },
           '+ Neues Venture'
         )
@@ -1302,44 +1584,228 @@ async function renderAdminVentures() {
   );
 }
 
+
 async function openAdminVenture(
   venture
 ) {
-  if (!venture?.owner_id) {
+  if (!venture?.id) {
     return;
   }
 
-  await openCustomerWorkspace(
-    venture.owner_id
-  );
+  state.venture =
+    venture;
 
-  if (
-    typeof selectVenture ===
-    'function'
-  ) {
-    await selectVenture(
-      venture.id
-    );
-  }
+  state.selectedCustomerId =
+    venture.owner_id ||
+    null;
+
+  adminPage =
+    'venture-detail';
+
+  renderAdminPage();
 }
 
+
+async function renderAdminVentureDetail() {
+  const venture =
+    state.venture;
+
+  if (!venture) {
+    adminPage =
+      'ventures';
+
+    return renderAdminPage();
+  }
+
+  const owner =
+    state.customers.find(
+      c =>
+        c.id ===
+        venture.owner_id
+    );
+
+  adminShell(
+    'Venture',
+
+    adminSection(
+      venture.title ||
+        'Venture',
+
+      owner?.full_name ||
+        owner?.company ||
+        'Kunde',
+
+      h(
+        'div',
+        {
+          class:
+            'admin-toolbar'
+        },
+
+        h(
+          'button',
+          {
+            class:
+              'btn btn-secondary',
+
+            type:
+              'button',
+
+            onclick: () => {
+              adminPage =
+                'ventures';
+
+              renderAdminPage();
+            }
+          },
+          '← Ventures'
+        ),
+
+        h(
+          'button',
+          {
+            class:
+              'btn btn-secondary',
+
+            type:
+              'button',
+
+            onclick: () => {
+              state.selectedCustomerId =
+                venture.owner_id;
+
+              adminPage =
+                'customer-detail';
+
+              renderAdminPage();
+            }
+          },
+          'Kunde öffnen'
+        )
+      ),
+
+      h(
+        'div',
+        {
+          class:
+            'settings-grid'
+        },
+
+        h(
+          'div',
+          {
+            class:
+              'settings-group'
+          },
+
+          h(
+            'h3',
+            {},
+            'Venture'
+          ),
+
+          h(
+            'strong',
+            {},
+            venture.title ||
+              'Ohne Titel'
+          ),
+
+          venture.description
+            ? h(
+                'p',
+                {
+                  class:
+                    'muted'
+                },
+                venture.description
+              )
+            : null,
+
+          venture.stage
+            ? h(
+                'span',
+                {
+                  class:
+                    'badge'
+                },
+                venture.stage
+              )
+            : null,
+
+          typeof venture.progress ===
+          'number'
+            ? h(
+                'p',
+                {
+                  class:
+                    'muted'
+                },
+                'Fortschritt: ' +
+                  venture.progress +
+                  '%'
+              )
+            : null
+        ),
+
+        h(
+          'div',
+          {
+            class:
+              'settings-group'
+          },
+
+          h(
+            'h3',
+            {},
+            'Kunde'
+          ),
+
+          h(
+            'strong',
+            {},
+            owner?.full_name ||
+              owner?.company ||
+              'Unbekannter Kunde'
+          ),
+
+          owner?.company
+            ? h(
+                'span',
+                {
+                  class:
+                    'muted'
+                },
+                owner.company
+              )
+            : null
+        )
+      )
+    )
+  );
+}
+
+
 // ---------- Tasks ----------
+
 async function renderAdminTasks() {
   const {
     data: ventures,
     error:
       ventureError
-  } = await sb
-    .from('ventures')
-    .select(
-      'id,title,owner_id'
-    )
-    .order(
-      'created_at',
-      {
-        ascending: false
-      }
-    );
+  } =
+    await sb
+      .from('ventures')
+      .select(
+        'id,title,owner_id'
+      )
+      .order(
+        'created_at',
+        {
+          ascending:
+            false
+        }
+      );
 
   if (ventureError) {
     return fail(
@@ -1348,7 +1814,10 @@ async function renderAdminTasks() {
   }
 
   const ventureIds =
-    (ventures || []).map(
+    (
+      ventures ||
+      []
+    ).map(
       v => v.id
     );
 
@@ -1360,21 +1829,23 @@ async function renderAdminTasks() {
     const {
       data,
       error
-    } = await sb
-      .from('tasks')
-      .select(
-        'id,venture_id,title,phase,status,due_date,assigned_to,created_at'
-      )
-      .in(
-        'venture_id',
-        ventureIds
-      )
-      .order(
-        'created_at',
-        {
-          ascending: false
-        }
-      );
+    } =
+      await sb
+        .from('tasks')
+        .select(
+          'id,venture_id,title,phase,status,due_date,assigned_to,created_at'
+        )
+        .in(
+          'venture_id',
+          ventureIds
+        )
+        .order(
+          'created_at',
+          {
+            ascending:
+              false
+          }
+        );
 
     if (error) {
       return fail(error);
@@ -1427,7 +1898,7 @@ async function renderAdminTasks() {
                     'strong',
                     {},
                     task.title ||
-                    'Aufgabe'
+                      'Aufgabe'
                   ),
 
                   h(
@@ -1437,7 +1908,7 @@ async function renderAdminTasks() {
                         'muted'
                     },
                     venture?.title ||
-                    'Venture unbekannt'
+                      'Venture unbekannt'
                   ),
 
                   h(
@@ -1447,8 +1918,8 @@ async function renderAdminTasks() {
                         'muted'
                     },
                     owner?.full_name ||
-                    owner?.company ||
-                    ''
+                      owner?.company ||
+                      ''
                   )
                 ),
 
@@ -1495,22 +1966,26 @@ async function renderAdminTasks() {
     adminSection(
       'Aufgabenübersicht',
       'Aufgaben aus den Kunden-Workspaces.',
+
       rows
     )
   );
 }
 
+
 // ---------- Documents ----------
+
 async function renderAdminDocs() {
   const {
     data: ventures,
     error:
       ventureError
-  } = await sb
-    .from('ventures')
-    .select(
-      'id,title,owner_id'
-    );
+  } =
+    await sb
+      .from('ventures')
+      .select(
+        'id,title,owner_id'
+      );
 
   if (ventureError) {
     return fail(
@@ -1519,7 +1994,10 @@ async function renderAdminDocs() {
   }
 
   const ids =
-    (ventures || []).map(
+    (
+      ventures ||
+      []
+    ).map(
       v => v.id
     );
 
@@ -1529,21 +2007,23 @@ async function renderAdminDocs() {
     const {
       data,
       error
-    } = await sb
-      .from('documents')
-      .select(
-        'id,venture_id,name,document_type,generated,processing_status,visibility,created_at'
-      )
-      .in(
-        'venture_id',
-        ids
-      )
-      .order(
-        'created_at',
-        {
-          ascending: false
-        }
-      );
+    } =
+      await sb
+        .from('documents')
+        .select(
+          'id,venture_id,name,document_type,generated,processing_status,visibility,created_at'
+        )
+        .in(
+          'venture_id',
+          ids
+        )
+        .order(
+          'created_at',
+          {
+            ascending:
+              false
+          }
+        );
 
     if (error) {
       return fail(error);
@@ -1605,7 +2085,7 @@ async function renderAdminDocs() {
                     'strong',
                     {},
                     doc.name ||
-                    'Dokument'
+                      'Dokument'
                   ),
 
                   h(
@@ -1615,7 +2095,7 @@ async function renderAdminDocs() {
                         'muted'
                     },
                     venture?.title ||
-                    'Venture unbekannt'
+                      'Venture unbekannt'
                   ),
 
                   h(
@@ -1625,8 +2105,8 @@ async function renderAdminDocs() {
                         'muted'
                     },
                     owner?.full_name ||
-                    owner?.company ||
-                    ''
+                      owner?.company ||
+                      ''
                   )
                 ),
 
@@ -1673,22 +2153,26 @@ async function renderAdminDocs() {
     adminSection(
       'Dokumentenübersicht',
       'Dokumente aus allen Kunden-Workspaces.',
+
       rows
     )
   );
 }
 
+
 // ---------- Messages ----------
+
 async function renderAdminMessages() {
   const {
     data: ventures,
     error:
       ventureError
-  } = await sb
-    .from('ventures')
-    .select(
-      'id,title,owner_id'
-    );
+  } =
+    await sb
+      .from('ventures')
+      .select(
+        'id,title,owner_id'
+      );
 
   if (ventureError) {
     return fail(
@@ -1697,7 +2181,10 @@ async function renderAdminMessages() {
   }
 
   const ids =
-    (ventures || []).map(
+    (
+      ventures ||
+      []
+    ).map(
       v => v.id
     );
 
@@ -1707,22 +2194,24 @@ async function renderAdminMessages() {
     const {
       data,
       error
-    } = await sb
-      .from('comm_messages')
-      .select(
-        'id,venture_id,sender_id,body,created_at,message_type,visibility'
-      )
-      .in(
-        'venture_id',
-        ids
-      )
-      .order(
-        'created_at',
-        {
-          ascending: false
-        }
-      )
-      .limit(100);
+    } =
+      await sb
+        .from('comm_messages')
+        .select(
+          'id,venture_id,sender_id,body,created_at,message_type,visibility'
+        )
+        .in(
+          'venture_id',
+          ids
+        )
+        .order(
+          'created_at',
+          {
+            ascending:
+              false
+          }
+        )
+        .limit(100);
 
     if (error) {
       return fail(error);
@@ -1762,12 +2251,16 @@ async function renderAdminMessages() {
                 {
                   class:
                     'admin-message-row',
-                  type: 'button',
-                  onclick: () =>
-                    openAdminMessage(
-                      message,
-                      venture
-                    )
+
+                  type:
+                    'button',
+
+                  onclick:
+                    () =>
+                      openAdminMessage(
+                        message,
+                        venture
+                      )
                 },
 
                 h(
@@ -1781,8 +2274,8 @@ async function renderAdminMessages() {
                     'strong',
                     {},
                     owner?.full_name ||
-                    owner?.company ||
-                    'Kunde'
+                      owner?.company ||
+                      'Kunde'
                   ),
 
                   h(
@@ -1792,7 +2285,7 @@ async function renderAdminMessages() {
                         'muted'
                     },
                     venture?.title ||
-                    'Venture'
+                      'Venture'
                   ),
 
                   h(
@@ -1800,7 +2293,7 @@ async function renderAdminMessages() {
                     {},
                     String(
                       message.body ||
-                      ''
+                        ''
                     ).slice(
                       0,
                       180
@@ -1830,55 +2323,160 @@ async function renderAdminMessages() {
     adminSection(
       'Kommunikation',
       'Nachrichten aus den Kunden-Workspaces.',
+
       rows
     )
   );
 }
 
+
 async function openAdminMessage(
   message,
   venture
 ) {
-  if (!venture?.owner_id) {
-    return;
-  }
+  state.adminMessage =
+    message;
 
-  await openCustomerWorkspace(
-    venture.owner_id
-  );
+  state.venture =
+    venture ||
+    null;
 
-  if (
-    typeof selectVenture ===
-    'function'
-  ) {
-    await selectVenture(
-      venture.id
-    );
-  }
+  state.selectedCustomerId =
+    venture?.owner_id ||
+    null;
 
-  state.tab =
-    'msgs';
+  adminPage =
+    'message-detail';
 
-  renderCustomerWorkspace();
+  renderAdminPage();
 }
 
+
+async function renderAdminMessageDetail() {
+  const message =
+    state.adminMessage;
+
+  if (!message) {
+    adminPage =
+      'messages';
+
+    return renderAdminPage();
+  }
+
+  const owner =
+    state.customers.find(
+      c =>
+        c.id ===
+        state.selectedCustomerId
+    );
+
+  adminShell(
+    'Nachricht',
+
+    adminSection(
+      'Nachricht',
+
+      owner?.full_name ||
+        owner?.company ||
+        'Kunde',
+
+      h(
+        'div',
+        {
+          class:
+            'admin-toolbar'
+        },
+
+        h(
+          'button',
+          {
+            class:
+              'btn btn-secondary',
+
+            type:
+              'button',
+
+            onclick: () => {
+              adminPage =
+                'messages';
+
+              renderAdminPage();
+            }
+          },
+          '← Nachrichten'
+        )
+      ),
+
+      h(
+        'div',
+        {
+          class:
+            'settings-group'
+        },
+
+        h(
+          'strong',
+          {},
+          owner?.full_name ||
+            owner?.company ||
+            'Kunde'
+        ),
+
+        h(
+          'span',
+          {
+            class:
+              'muted'
+          },
+          state.venture?.title ||
+            'Venture'
+        ),
+
+        h(
+          'p',
+          {},
+          message.body ||
+            ''
+        ),
+
+        h(
+          'small',
+          {
+            class:
+              'muted'
+          },
+          fmtT(
+            message.created_at
+          )
+        )
+      )
+    )
+  );
+}
+
+
 // ---------- Activity ----------
+
 async function renderAdminActivity() {
   const {
     data,
     error
-  } = await sb
-    .from('venture_activities')
-    .select(
-      'id,venture_id,actor_id,actor_type,event_type,entity_type,entity_id,summary,visibility,created_at'
-    )
-    .order(
-      'created_at',
-      {
-        ascending: false
-      }
-    )
-    .limit(100);
+  } =
+    await sb
+      .from(
+        'venture_activities'
+      )
+      .select(
+        'id,venture_id,actor_id,actor_type,event_type,entity_type,entity_id,summary,visibility,created_at'
+      )
+      .order(
+        'created_at',
+        {
+          ascending:
+            false
+        }
+      )
+      .limit(100);
 
   if (error) {
     return fail(error);
@@ -1924,8 +2522,8 @@ async function renderAdminActivity() {
                     'strong',
                     {},
                     activity.summary ||
-                    activity.event_type ||
-                    'Aktivität'
+                      activity.event_type ||
+                      'Aktivität'
                   ),
 
                   h(
@@ -1935,7 +2533,7 @@ async function renderAdminActivity() {
                         'muted'
                     },
                     activity.event_type ||
-                    ''
+                      ''
                   ),
 
                   h(
@@ -1962,24 +2560,30 @@ async function renderAdminActivity() {
     adminSection(
       'Aktivitätsverlauf',
       'Zentrale Übersicht der Venture-Aktivitäten.',
+
       rows
     )
   );
 }
 
+
 // ---------- Settings ----------
+
 async function loadUserSettings() {
   const {
     data,
     error
-  } = await sb
-    .from('portal_user_settings')
-    .select('*')
-    .eq(
-      'user_id',
-      state.user.id
-    )
-    .maybeSingle();
+  } =
+    await sb
+      .from(
+        'portal_user_settings'
+      )
+      .select('*')
+      .eq(
+        'user_id',
+        state.user.id
+      )
+      .maybeSingle();
 
   if (error) {
     console.warn(
@@ -1992,6 +2596,7 @@ async function loadUserSettings() {
 
   return data;
 }
+
 
 async function saveUserSettings(
   values
@@ -2009,19 +2614,20 @@ async function saveUserSettings(
   const {
     data,
     error
-  } = await sb
-    .from(
-      'portal_user_settings'
-    )
-    .upsert(
-      payload,
-      {
-        onConflict:
-          'user_id'
-      }
-    )
-    .select()
-    .single();
+  } =
+    await sb
+      .from(
+        'portal_user_settings'
+      )
+      .upsert(
+        payload,
+        {
+          onConflict:
+            'user_id'
+        }
+      )
+      .select()
+      .single();
 
   if (error) {
     return fail(error);
@@ -2030,10 +2636,12 @@ async function saveUserSettings(
   return data;
 }
 
+
 async function renderAdminSettings() {
   const settings =
-    (await loadUserSettings()) ||
-    {};
+    (
+      await loadUserSettings()
+    ) || {};
 
   const email =
     settings.email_notifications !==
@@ -2086,15 +2694,19 @@ async function renderAdminSettings() {
       h(
         'input',
         {
-          type: 'checkbox',
+          type:
+            'checkbox',
+
           checked,
 
           onchange:
             async e => {
-              await saveUserSettings({
-                [key]:
-                  e.target.checked
-              });
+              await saveUserSettings(
+                {
+                  [key]:
+                    e.target.checked
+                }
+              );
             }
         }
       ),
@@ -2198,10 +2810,12 @@ async function renderAdminSettings() {
 
               onchange:
                 async e => {
-                  await saveUserSettings({
-                    appearance:
-                      e.target.value
-                  });
+                  await saveUserSettings(
+                    {
+                      appearance:
+                        e.target.value
+                    }
+                  );
                 }
             },
 
@@ -2255,10 +2869,12 @@ async function renderAdminSettings() {
 
               onchange:
                 async e => {
-                  await saveUserSettings({
-                    locale:
-                      e.target.value
-                  });
+                  await saveUserSettings(
+                    {
+                      locale:
+                        e.target.value
+                    }
+                  );
                 }
             },
 
@@ -2303,10 +2919,12 @@ async function renderAdminSettings() {
 
               onchange:
                 async e => {
-                  await saveUserSettings({
-                    timezone:
-                      e.target.value
-                  });
+                  await saveUserSettings(
+                    {
+                      timezone:
+                        e.target.value
+                    }
+                  );
                 }
             }
           )
@@ -2339,6 +2957,7 @@ async function renderAdminSettings() {
               class:
                 'admin-avatar large'
             },
+
             initials(
               state.profile?.full_name ||
               state.user?.email
@@ -2353,7 +2972,7 @@ async function renderAdminSettings() {
               'strong',
               {},
               state.profile?.full_name ||
-              'Administrator'
+                'Administrator'
             ),
 
             h(
@@ -2363,7 +2982,7 @@ async function renderAdminSettings() {
                   'muted'
               },
               state.user?.email ||
-              ''
+                ''
             ),
 
             state.profile?.company
@@ -2387,12 +3006,15 @@ async function renderAdminSettings() {
     adminSection(
       'Portal-Einstellungen',
       'Persönliche Einstellungen für deinen Admin-Zugang.',
+
       form
     )
   );
 }
 
+
 // ---------- Logout ----------
+
 async function logout() {
   try {
     await sb.auth.signOut();
@@ -2403,7 +3025,9 @@ async function logout() {
   }
 }
 
+
 // ---------- Admin Initialization ----------
+
 function initAdminPortal() {
   if (!isAdmin()) {
     return;
@@ -2414,22 +3038,14 @@ function initAdminPortal() {
       'overview';
   }
 
-  if (
-    !state.selectedCustomerId
-  ) {
-    renderAdminPage();
-  }
+  renderAdminPage();
 }
 
+
 // ---------- Expose ----------
+
 window.renderAdminPage =
   renderAdminPage;
-
-window.openCustomerWorkspace =
-  openCustomerWorkspace;
-
-window.renderCustomerWorkspace =
-  renderCustomerWorkspace;
 
 window.initAdminPortal =
   initAdminPortal;
