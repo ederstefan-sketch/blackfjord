@@ -12,8 +12,8 @@ async function renderAdminMessages() {
 
   if (ids.length) {
     const { data, error } = await sb
-      .from('messages')
-      .select('id,venture_id,subject,message,status,created_at')
+      .from('comm_messages')
+      .select('id,venture_id,sender_id,body,created_at')
       .in('venture_id', ids)
       .order('created_at', { ascending: false });
 
@@ -25,54 +25,67 @@ async function renderAdminMessages() {
     ? h(
         'div',
         { class: 'admin-message-list' },
+
         ...messages.map(message => {
-          const venture = ventures.find(v => v.id === message.venture_id);
+          const venture = ventures.find(
+            v => v.id === message.venture_id
+          );
+
           const owner = state.customers.find(
             c => c.id === venture?.owner_id
           );
+
+          const senderIsAdmin =
+            message.sender_id === state.user?.id;
 
           return h(
             'div',
             {
               class: 'admin-message-row',
-              onclick: () => openAdminMessage(message, venture)
+              onclick: () =>
+                openAdminMessage(message, venture)
             },
+
             h(
               'div',
               { class: 'admin-message-main' },
+
               h(
                 'strong',
                 {},
-                message.subject || 'Nachricht'
+                senderIsAdmin
+                  ? 'BLACKFJORD'
+                  : 'Kunde'
               ),
+
               h(
                 'span',
                 { class: 'muted' },
-                venture?.title || 'Venture unbekannt'
+                venture?.title ||
+                  'Venture unbekannt'
               ),
+
               h(
                 'span',
                 { class: 'muted' },
-                owner?.full_name || owner?.company || ''
+                owner?.full_name ||
+                  owner?.company ||
+                  ''
               ),
+
               h(
                 'span',
                 { class: 'muted' },
-                message.message
-                  ? message.message.slice(0, 120)
+                message.body
+                  ? message.body.slice(0, 120)
                   : ''
               )
             ),
+
             h(
               'div',
               { class: 'admin-message-meta' },
-              message.status
-                ? h(
-                    'span',
-                    { class: 'badge' },
-                    message.status
-                  )
-                : null,
+
               h(
                 'span',
                 { class: 'muted' },
@@ -82,68 +95,104 @@ async function renderAdminMessages() {
           );
         })
       )
-    : adminEmpty('Keine Nachrichten vorhanden.');
+    : adminEmpty(
+        'Keine Nachrichten vorhanden.'
+      );
 
   adminShell(
     'Nachrichten',
+
     adminSection(
       'Nachrichtenübersicht',
       'Nachrichten aus allen Kunden-Workspaces.',
+
       rows
     )
   );
 }
 
 
-function openAdminMessage(message, venture) {
+function openAdminMessage(
+  message,
+  venture
+) {
   state.adminMessage = message;
   state.adminMessageVenture = venture;
-  adminPage = 'message-detail';
+
+  adminPage =
+    'message-detail';
+
   renderAdminPage();
 }
 
 
 function renderAdminMessageDetail() {
-  const message = state.adminMessage;
-  const venture = state.adminMessageVenture;
+  const message =
+    state.adminMessage;
+
+  const venture =
+    state.adminMessageVenture;
 
   if (!message) {
     adminPage = 'messages';
     return renderAdminPage();
   }
 
-  const owner = state.customers.find(
-    c => c.id === venture?.owner_id
-  );
+  const owner =
+    state.customers.find(
+      c =>
+        c.id ===
+        venture?.owner_id
+    );
 
   const content = h(
     'div',
-    { class: 'admin-detail' },
+    {
+      class:
+        'admin-detail'
+    },
 
     h(
       'div',
-      { class: 'admin-detail-head' },
+      {
+        class:
+          'admin-detail-head'
+      },
+
       h(
         'div',
         {},
+
         h(
           'h2',
           {},
-          message.subject || 'Nachricht'
+          'Nachricht'
         ),
+
         h(
           'div',
-          { class: 'muted' },
-          venture?.title || 'Venture unbekannt'
+          {
+            class:
+              'muted'
+          },
+          venture?.title ||
+            'Venture unbekannt'
         )
       ),
+
       h(
         'button',
         {
-          class: 'btn btn-secondary',
-          type: 'button',
+          class:
+            'btn btn-secondary',
+
+          type:
+            'button',
+
           onclick: () => {
-            adminPage = 'messages';
+            adminPage =
+              'messages';
+
             renderAdminPage();
           }
         },
@@ -153,26 +202,41 @@ function renderAdminMessageDetail() {
 
     h(
       'div',
-      { class: 'admin-card' },
+      {
+        class:
+          'admin-card'
+      },
+
       h(
         'div',
-        { class: 'muted' },
+        {
+          class:
+            'muted'
+        },
         owner?.full_name ||
           owner?.company ||
           'Kunde unbekannt'
       ),
+
       h(
         'div',
-        { class: 'muted' },
-        fmtT(message.created_at)
+        {
+          class:
+            'muted'
+        },
+        fmtT(
+          message.created_at
+        )
       ),
+
       h(
         'div',
         {
           style:
             'margin-top:18px;white-space:pre-wrap;line-height:1.6'
-        }
-      , message.message || '')
+        },
+        message.body || ''
+      )
     ),
 
     h(
@@ -181,19 +245,20 @@ function renderAdminMessageDetail() {
         style:
           'display:flex;gap:10px;margin-top:16px'
       },
+
       h(
         'button',
         {
-          class: 'btn btn-danger',
-          type: 'button',
+          class:
+            'btn btn-danger',
+
+          type:
+            'button',
+
           onclick: async () => {
-            const ok = await deleteAdminMessage(message);
-            if (ok) {
-              state.adminMessage = null;
-              state.adminMessageVenture = null;
-              adminPage = 'messages';
-              renderAdminPage();
-            }
+            await deleteAdminMessage(
+              message
+            );
           }
         },
         'Löschen'
