@@ -283,3 +283,476 @@ x 14px; }
   .modal h3 { margin: 0 0 14px; font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
   .modal input { margin-bottom: 18px; }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+
+/* ============================================================
+   VENTURE LAB — DESIGN 2.0
+   Zentrales visuelles Fundament
+   ============================================================ */
+
+:root {
+  --bg: #0c0d10;
+  --panel: #14161a;
+  --panel-2: #1b1e23;
+  --panel-3: #22262c;
+
+  --line: rgba(255,255,255,.08);
+  --line-strong: rgba(255,255,255,.13);
+
+  --text: #f1f2f3;
+  --silver: #d2d5da;
+  --muted: #8e949d;
+
+  --blue: #5d91d8;
+  --blue-hi: #86b2ee;
+  --blue-dim: rgba(93,145,216,.13);
+
+  --ok: #76bd9a;
+  --warn: #d3b06b;
+  --err: #e58d8d;
+
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 18px;
+
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 14px;
+  --space-4: 18px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 42px;
+
+  --shadow: 0 16px 40px rgba(0,0,0,.22);
+}
+
+/* ---------- Grundlayout ---------- */
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--text);
+}
+
+h2 {
+  font-size: 21px;
+  line-height: 1.3;
+}
+
+p {
+  color: var(--silver);
+}
+
+/* ---------- Einheitliche Buttons ---------- */
+
+.btn,
+.btn-primary {
+  background: var(--blue);
+  color: #08101c;
+  border: 0;
+  border-radius: var(--radius-sm);
+  min-height: 42px;
+  padding: 10px 17px;
+  font-weight: 600;
+  transition:
+    background .18s ease,
+    transform .18s ease,
+    border-color .18s ease;
+}
+
+.btn:hover:not(:disabled),
+.btn-primary:hover:not(:disabled) {
+  background: var(--blue-hi);
+  transform: translateY(-1px);
+}
+
+.btn-secondary,
+.btn.ghost {
+  background: transparent;
+  color: var(--silver);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  min-height: 42px;
+  padding: 10px 17px;
+}
+
+.btn-secondary:hover,
+.btn.ghost:hover {
+  background: var(--panel-2);
+  border-color: rgba(255,255,255,.18);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--err);
+  border: 1px solid rgba(229,141,141,.30);
+  border-radius: var(--radius-sm);
+  min-height: 42px;
+  padding: 10px 17px;
+}
+
+.btn-danger:hover {
+  background: rgba(229,141,141,.08);
+}
+
+.btn.sm,
+.btn-primary.sm,
+.btn-secondary.sm,
+.btn-danger.sm {
+  min-height: 36px;
+  padding: 7px 12px;
+  font-size: 14px;
+}
+
+/* ---------- Formulare ---------- */
+
+input[type=text],
+input[type=email],
+input[type=password],
+input[type=date],
+select,
+textarea {
+  background: #101216;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  min-height: 42px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(134,178,238,.55);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(93,145,216,.10);
+}
+
+/* ---------- Badges ---------- */
+
+.badge,
+.chip {
+  background: rgba(255,255,255,.035);
+  border: 1px solid var(--line-strong);
+  color: var(--silver);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.badge.warn {
+  color: var(--warn);
+  border-color: rgba(211,176,107,.35);
+  background: rgba(211,176,107,.06);
+}
+
+.badge.bad {
+  color: var(--err);
+  border-color: rgba(229,141,141,.35);
+  background: rgba(229,141,141,.06);
+}
+
+/* ============================================================
+   ADMIN 2.0
+   ============================================================ */
+
+.admin-content {
+  max-width: 1120px;
+  padding: 30px 24px 60px;
+}
+
+.admin-header {
+  background: rgba(12,13,16,.94);
+  backdrop-filter: blur(14px);
+}
+
+.admin-header-title .eyebrow,
+.admin-page-intro .eyebrow {
+  color: var(--muted);
+  letter-spacing: .16em;
+  font-size: 10px;
+}
+
+.admin-header-title h1 {
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.admin-section {
+  margin-top: 34px;
+}
+
+.admin-section-head {
+  margin-bottom: 14px;
+}
+
+.admin-section-head h2 {
+  font-size: 17px;
+}
+
+.admin-section-head .muted {
+  font-size: 13px;
+}
+
+/* ---------- Cards ---------- */
+
+.admin-stat-card,
+.admin-action-card,
+.settings-group,
+.admin-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+
+.admin-stat-card {
+  padding: 20px;
+}
+
+.admin-stat-card:hover,
+.admin-action-card:hover {
+  border-color: var(--line-strong);
+  background: var(--panel-2);
+}
+
+.admin-stat-value {
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.admin-stat-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* ---------- Listen ---------- */
+
+.admin-customer-list,
+.admin-venture-list,
+.admin-task-list,
+.admin-doc-list,
+.admin-message-list,
+.admin-activity-list {
+  border-top: 1px solid var(--line);
+}
+
+.admin-customer-row,
+.admin-venture-row,
+.admin-task-row,
+.admin-doc-row,
+.admin-message-row,
+.admin-activity-row {
+  min-height: 64px;
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-customer-row:hover,
+.admin-venture-row:hover,
+.admin-task-row:hover,
+.admin-doc-row:hover,
+.admin-message-row:hover {
+  background: rgba(255,255,255,.025);
+}
+
+/* ---------- Detail / Workspace ---------- */
+
+.admin-detail,
+.admin-detail-head {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.admin-detail {
+  padding: 20px;
+}
+
+.admin-detail-head {
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.settings-group {
+  padding: 20px;
+}
+
+.settings-group h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+
+/* ---------- Aktivitätscenter ---------- */
+
+.admin-activity-list {
+  margin-top: 16px;
+}
+
+.admin-activity-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.admin-activity-icon {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  color: var(--blue-hi);
+  background: var(--blue-dim);
+  border-radius: 50%;
+}
+
+.admin-activity-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-activity-main strong {
+  display: block;
+  font-weight: 500;
+}
+
+.admin-activity-meta {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ---------- Nachrichten ---------- */
+
+.admin-message-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ---------- Empty States ---------- */
+
+.admin-empty {
+  padding: 60px 20px;
+}
+
+.admin-empty-icon {
+  opacity: .65;
+}
+
+/* ============================================================
+   KUNDENPORTAL 2.0
+   ============================================================ */
+
+main#content:not(.chatmode) {
+  max-width: 920px;
+  padding-top: 28px;
+  padding-bottom: 60px;
+}
+
+nav.tabs {
+  background: var(--bg);
+  gap: 2px;
+}
+
+nav.tabs button {
+  padding: 13px 14px;
+  font-size: 14px;
+}
+
+nav.tabs button[aria-current=true] {
+  color: var(--text);
+  border-bottom-color: var(--blue);
+}
+
+/* ---------- Kundenkarten ---------- */
+
+.item {
+  padding: 16px 4px;
+}
+
+.item:hover {
+  background: rgba(255,255,255,.018);
+}
+
+.list {
+  border-top-color: var(--line);
+}
+
+/* ---------- Chat ---------- */
+
+.msg {
+  border-radius: var(--radius);
+}
+
+.msg.user {
+  background: var(--blue-dim);
+  border: 1px solid rgba(93,145,216,.14);
+}
+
+.msg.assistant {
+  background: var(--panel);
+  border-color: var(--line);
+}
+
+.note {
+  font-size: 12px;
+}
+
+/* ---------- Banner ---------- */
+
+.banner {
+  background: var(--panel);
+  border-bottom-color: var(--line);
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 700px) {
+  .admin-content {
+    padding: 22px 14px 48px;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-stat-card {
+    padding: 16px;
+  }
+
+  .admin-stat-value {
+    font-size: 24px;
+  }
+
+  .admin-customer-row,
+  .admin-venture-row,
+  .admin-task-row,
+  .admin-doc-row,
+  .admin-message-row {
+    align-items: flex-start;
+  }
+
+  .admin-activity-row {
+    flex-wrap: wrap;
+  }
+
+  .admin-activity-meta {
+    width: 100%;
+    margin-left: 42px;
+  }
+}
