@@ -543,17 +543,28 @@ async function renderChat(c) {
         }
       );
 
-      if (
-        agent.error ||
-        !agent.data?.ok
-      ) {
-        const detail =
-          agent.data?.error ||
-          agent.error?.message ||
-          'Das Dokument konnte nicht verarbeitet werden.';
+      if (agent.error || !agent.data?.ok) {
+  let detail = agent.data?.error || '';
 
-        throw new Error(detail);
-      }
+  if (agent.error?.context?.json) {
+    try {
+      const responseBody = await agent.error.context.json();
+
+      detail =
+        responseBody?.error ||
+        responseBody?.message ||
+        detail;
+    } catch (_) {
+      // Antwort enthält keinen lesbaren JSON-Fehler
+    }
+  }
+
+  throw new Error(
+    detail ||
+    agent.error?.message ||
+    'Das Dokument konnte nicht verarbeitet werden.'
+  );
+}
 
       status.className =
         'msg assistant';
