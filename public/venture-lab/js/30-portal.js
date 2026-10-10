@@ -328,6 +328,9 @@ function renderAdminPage() {
     case 'settings':
       return renderAdminSettings();
 
+    case 'admin-ai-chat':
+      return renderAdminAIChat();
+
     case 'overview':
     default:
       return renderAdminOverview();
