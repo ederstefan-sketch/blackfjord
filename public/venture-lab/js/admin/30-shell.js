@@ -254,6 +254,12 @@ function adminDrawer() {
       ),
 
       item(
+        'admin-ai-chat',
+        'KI-Geschäftspartner',
+        '✦'
+      ),
+
+      item(
         'customers',
         'Kunden',
         '♙'
