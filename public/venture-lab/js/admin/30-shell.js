@@ -249,7 +249,7 @@ function adminDrawer() {
 
       item(
         'overview',
-        'Übersicht',
+        'Cockpit',
         '⌂'
       ),
 
