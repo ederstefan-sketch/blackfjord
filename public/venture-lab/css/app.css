@@ -1853,3 +1853,44 @@ details pre {
 .admin-cockpit-loading {
   padding: 24px 0;
 }
+
+/* In app.css ergänzen: dunkle Darstellung für klickbare Kunden-/Venture-Zeilen */
+.admin-customer-row,
+.admin-venture-row {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+.admin-customer-row:hover,
+.admin-venture-row:hover {
+  color: var(--text);
+  background: var(--panel-2);
+}
+
+/* Cockpit-Erweiterung */
+.admin-cockpit-extra { display: grid; gap: 16px; }
+.admin-cockpit-record-list { display: grid; gap: 10px; }
+.admin-cockpit-record {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+}
+.admin-cockpit-record-copy { min-width: 0; }
+.admin-cockpit-record-copy strong { display: block; }
+.admin-cockpit-record-copy p {
+  margin: 6px 0;
+  color: var(--silver);
+  overflow-wrap: anywhere;
+}
+.admin-cockpit-urgent {
+  color: var(--err);
+  font-size: 12px;
+  font-weight: 700;
+}

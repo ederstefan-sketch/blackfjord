@@ -21,9 +21,7 @@ async function renderAdminOverview() {
         .select('id,title,owner_id,created_at')
         .order('created_at', { ascending: false }),
 
-      sb
-        .from('customers')
-        .select('id')
+      sb.from('profiles').select('id').eq('role', 'customer')
     ]);
 
     if (ventureResult.error) throw ventureResult.error;
