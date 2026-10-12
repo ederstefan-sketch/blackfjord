@@ -261,7 +261,7 @@ function adminDrawer() {
 
       item(
         'customers',
-        'Kunden',
+        'CRM & Kunden',
         '♙'
       ),
 
