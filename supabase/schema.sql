@@ -9,6 +9,8 @@
 --   - portal_memberships mit plan/trial_ends_at (Frontend-Badge)
 --   - comm_messages (Nachrichten-Tab), venture_ai_resources (KI-Status)
 --   - ventures.owner_id default auth.uid() (Kunden-Onboarding)
+--   - CRM-Felder auf portal_contacts/tasks/venture_decisions/venture_memory
+--     (40-crm.js + Cockpit, nachgezogen per Migration 20261014_crm_alignment.sql)
 -- =====================================================================
 
 -- ---------- 1. Profile (1:1 zu auth.users) ----------
@@ -150,6 +152,7 @@ create table public.venture_memory (
                 check (source_type in ('customer','ai','system')),
   visibility    text not null default 'customer'
                 check (visibility in ('customer','internal')),
+  relevance     integer,
   source_message_id uuid references public.chat_messages(id) on delete set null,
   created_at    timestamptz not null default now()
 );
@@ -165,6 +168,7 @@ create table public.tasks (
   due_date    date,
   assigned_to text not null default 'customer' check (assigned_to in ('customer','blackfjord')),
   visibility  text not null default 'customer' check (visibility in ('customer','internal')),
+  metadata    jsonb not null default '{}'::jsonb,
   created_at  timestamptz not null default now()
 );
 create index on public.tasks(venture_id, created_at);
@@ -216,6 +220,8 @@ create table public.venture_decisions (
   venture_id  uuid not null references public.ventures(id) on delete cascade,
   title       text not null,
   rationale   text,
+  decision    text,
+  scope       text,
   decided_by  text not null default 'customer' check (decided_by in ('customer','blackfjord')),
   visibility  text not null default 'customer' check (visibility in ('customer','internal')),
   created_at  timestamptz not null default now(),
@@ -227,14 +233,20 @@ create index on public.venture_decisions(venture_id, updated_at);
 create table public.portal_contacts (
   id            uuid primary key default gen_random_uuid(),
   contact_type  text not null default 'person' check (contact_type in ('person','company')),
+  first_name    text,
+  last_name     text,
   display_name  text not null,
+  company_name  text,
   email         text,
   phone         text,
   notes         text,
+  metadata      jsonb not null default '{}'::jsonb,
   created_by    uuid references public.profiles(id),
   visibility    text not null default 'customer' check (visibility in ('customer','internal')),
-  created_at    timestamptz not null default now()
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
 );
+create index on public.portal_contacts(updated_at desc);
 
 create table public.venture_contacts (
   venture_id   uuid not null references public.ventures(id) on delete cascade,
