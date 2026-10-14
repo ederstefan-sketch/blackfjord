@@ -113,7 +113,7 @@
       ['tasks', 'Aufgaben'],
       ['documents', 'Dokumente'],
       ['comm_messages', 'Nachrichten'],
-      ['memberships', 'Mitgliedschaften'],
+      ['portal_memberships', 'Mitgliedschaften'],
       ['chat_threads', 'Chatverläufe'],
       ['chat_messages', 'Chatnachrichten'],
       ['venture_decisions', 'Entscheidungen'],

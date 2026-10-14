@@ -155,17 +155,17 @@
     const meta = getMetadata(contact);
 
     if (!contact?.id) {
-      toast('Bitte zuerst den Kontakt speichern.', 'error');
+      toast('Bitte zuerst den Kontakt speichern.', 'err');
       return;
     }
 
     if (!email) {
-      toast('Bitte zuerst eine E-Mail-Adresse speichern.', 'error');
+      toast('Bitte zuerst eine E-Mail-Adresse speichern.', 'err');
       return;
     }
 
     if (!name) {
-      toast('Bitte zuerst einen Kontaktnamen speichern.', 'error');
+      toast('Bitte zuerst einen Kontaktnamen speichern.', 'err');
       return;
     }
 
@@ -238,7 +238,7 @@
         toast(
           'Einladung wurde versendet, aber der Status konnte ' +
           'nicht gespeichert werden. Bitte den Kontakt prüfen.',
-          'error'
+          'err'
         );
 
         await loadCRM();
@@ -260,7 +260,7 @@
       toast(
         error?.message ||
         'Portal-Einladung fehlgeschlagen.',
-        'error'
+        'err'
       );
 
     } finally {
@@ -489,7 +489,7 @@
         try {
           const payload = {
             contact_type: company.value.trim()
-              ? 'organization'
+              ? 'company'
               : 'person',
 
             display_name: displayName,
@@ -556,8 +556,7 @@
                 venture_id: venture.value,
                 contact_id: saved.id,
                 relationship: 'contact',
-                is_primary: true,
-                metadata: {}
+                is_primary: true
               });
 
             if (linkResult.error) throw linkResult.error;

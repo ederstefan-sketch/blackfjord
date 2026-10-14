@@ -82,11 +82,7 @@ function adminHeader(
         'BLACKFJORD'
       ),
 
-      h(
-        'h1',
-        {},
-        title
-      )
+      h('h1', {}, title == null ? '' : title)
     ),
 
     h(

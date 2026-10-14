@@ -160,7 +160,7 @@ async function selectVenture(id) {
       data,
       error
     } = await sb
-      .from('memberships')
+      .from('portal_memberships')
       .select('*')
       .eq(
         'venture_id',
