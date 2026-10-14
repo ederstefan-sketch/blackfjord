@@ -15,9 +15,12 @@ function adminShell(
   title,
   ...content
 ) {
+  const drawer = adminDrawer();
+
   app.replaceChildren(
     adminHeader(title),
-    adminDrawer(),
+
+    ...(drawer ? [drawer] : []),
 
     h(
       'main',
