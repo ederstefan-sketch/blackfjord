@@ -1,0 +1,119 @@
+/*
+  BLACKFJORD Venture Lab — CRM layout fixes
+  Upload as: public/venture-lab/css/crm-fixes.css
+  Include AFTER app.css in public/venture-lab.html.
+*/
+
+:root { color-scheme: dark; }
+
+/* Keep native Safari/iOS form controls from rendering white. */
+#app input,
+#app select,
+#app textarea,
+#app input[type="text"],
+#app input[type="email"],
+#app input[type="tel"],
+#app input[type="url"],
+#app input[type="search"],
+#app input[type="number"],
+#app input[type="password"] {
+  color: var(--text, #f1f2f3) !important;
+  background-color: var(--panel-2, #1b1e23) !important;
+  border: 1px solid var(--line-strong, rgba(255,255,255,.14)) !important;
+  border-radius: var(--radius-sm, 10px);
+  min-width: 0;
+  max-width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  box-shadow: none;
+}
+
+#app input::placeholder,
+#app textarea::placeholder {
+  color: var(--muted, #8e949d) !important;
+  opacity: 1;
+}
+
+#app input:focus,
+#app select:focus,
+#app textarea:focus {
+  outline: 2px solid var(--blue, #5d91d8);
+  outline-offset: 1px;
+  border-color: var(--blue, #5d91d8) !important;
+}
+
+#app select option { color: #f1f2f3; background: #14161a; }
+
+/* Prevent CRM fields and columns from forcing horizontal overflow. */
+#app .crm-form,
+#app .crm-grid,
+#app .crm-layout,
+#app .crm-panel,
+#app .crm-card,
+#app .form-grid,
+#app .form-group,
+#app .field,
+#app .field-group,
+#app .crm,
+#app [class*="crm-"] {
+  min-width: 0;
+  max-width: 100%;
+}
+
+#app .crm-grid,
+#app .crm-layout,
+#app .form-grid { gap: 14px; }
+
+#app .crm-grid > *,
+#app .crm-layout > *,
+#app .form-grid > * { min-width: 0; }
+
+#app .form-group label,
+#app .field label,
+#app .field-group label,
+#app label { overflow-wrap: anywhere; }
+
+/* Keep action buttons aligned and prevent overlap. */
+#app .crm-actions,
+#app .contact-actions,
+#app .crm-card-actions,
+#app .action-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+#app button,
+#app .btn { max-width: 100%; overflow-wrap: anywhere; }
+
+#app [class*="email"],
+#app [class*="phone"],
+#app [class*="contact"] { overflow-wrap: anywhere; }
+
+/* Stack CRM columns on tablet/mobile rather than squeezing them. */
+@media (max-width: 760px) {
+  #app .crm-grid,
+  #app .crm-layout,
+  #app .form-grid { grid-template-columns: minmax(0, 1fr) !important; }
+
+  #app .crm-grid > *,
+  #app .crm-layout > *,
+  #app .form-grid > * { width: 100%; }
+
+  #app .crm-actions,
+  #app .contact-actions,
+  #app .crm-card-actions,
+  #app .action-row { align-items: stretch; }
+}
+
+/* iPad Safari: enforce dark native control rendering. */
+@supports (-webkit-touch-callout: none) {
+  #app input,
+  #app select,
+  #app textarea {
+    color-scheme: dark;
+    -webkit-text-fill-color: var(--text, #f1f2f3);
+  }
+}
