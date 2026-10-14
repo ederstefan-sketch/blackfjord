@@ -119,7 +119,6 @@
       ['venture_decisions', 'Entscheidungen'],
       ['venture_memory', 'Merkeinträge'],
       ['venture_activities', 'Aktivitäten'],
-      ['analyses', 'Analysen']
     ];
     const found = [];
     for (const [table, label] of dependencies) {
